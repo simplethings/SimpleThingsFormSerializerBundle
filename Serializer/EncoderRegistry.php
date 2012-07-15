@@ -1,6 +1,6 @@
 <?php
 /**
- * SimpleThings FormExtraBundle
+ * SimpleThings FormSerializerBundle
  *
  * LICENSE
  *
@@ -11,7 +11,7 @@
  * to kontakt@beberlei.de so I can send you a copy immediately.
  */
 
-namespace SimpleThings\FormExtraBundle\Serializer;
+namespace SimpleThings\FormSerializerBundle\Serializer;
 
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;

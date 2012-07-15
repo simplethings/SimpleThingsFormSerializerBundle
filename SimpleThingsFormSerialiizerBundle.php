@@ -11,15 +11,12 @@
  * to kontakt@beberlei.de so I can send you a copy immediately.
  */
 
-namespace SimpleThings\FormSerializerBundle\Serializer\NamingStrategy;
 
-use Symfony\Component\Form\FormInterface;
+namespace SimpleThings\FormSerializerBundle;
 
-class CamelCaseStrategy implements NamingStrategy
+use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+
+class SimpleThingsFormSerializerBundle extends Bundle
 {
-    public function translateName(FormInterface $form)
-    {
-        return strtolower(preg_replace('/[A-Z]/', '_\\0', $form->getName()));
-    }
 }
-

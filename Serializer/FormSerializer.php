@@ -1,6 +1,6 @@
 <?php
 /**
- * SimpleThings FormExtraBundle
+ * SimpleThings FormSerializerBundle
  *
  * LICENSE
  *
@@ -11,15 +11,15 @@
  * to kontakt@beberlei.de so I can send you a copy immediately.
  */
 
-namespace SimpleThings\FormExtraBundle\Serializer;
+namespace SimpleThings\FormSerializerBundle\Serializer;
 
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\TypeInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
 
-use SimpleThings\FormExtraBundle\Serializer\NamingStrategy\CamelCaseStrategy;
-use SimpleThings\FormExtraBundle\Serializer\NamingStrategy\NamingStrategy;
+use SimpleThings\FormSerializerBundle\Serializer\NamingStrategy\CamelCaseStrategy;
+use SimpleThings\FormSerializerBundle\Serializer\NamingStrategy\NamingStrategy;
 
 class FormSerializer
 {

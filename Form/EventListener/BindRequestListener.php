@@ -1,6 +1,6 @@
 <?php
 /**
- * SimpleThings FormExtraBundle
+ * SimpleThings FormSerializerBundle
  *
  * LICENSE
  *
@@ -11,7 +11,7 @@
  * to kontakt@beberlei.de so I can send you a copy immediately.
  */
 
-namespace SimpleThings\FormExtraBundle\Form\EventListener;
+namespace SimpleThings\FormSerializerBundle\Form\EventListener;
 
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormEvent;
@@ -19,9 +19,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 
-use SimpleThings\FormExtraBundle\Serializer\EncoderRegistry;
-use SimpleThings\FormExtraBundle\Serializer\NamingStrategy\CamelCaseStrategy;
-use SimpleThings\FormExtraBundle\Serializer\NamingStrategy\NamingStrategy;
+use SimpleThings\FormSerializerBundle\Serializer\EncoderRegistry;
+use SimpleThings\FormSerializerBundle\Serializer\NamingStrategy\CamelCaseStrategy;
+use SimpleThings\FormSerializerBundle\Serializer\NamingStrategy\NamingStrategy;
 
 class BindRequestListener implements EventSubscriberInterface
 {

@@ -11,12 +11,12 @@
  * to kontakt@beberlei.de so I can send you a copy immediately.
  */
 
-namespace SimpleThings\FormExtraBundle\Form;
+namespace SimpleThings\FormSerializerBundle\Form;
 
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\AbstractExtension;
 
-use SimpleThings\FormExtraBundle\Form\Extension\SerializerTypeExtension;
+use SimpleThings\FormSerializerBundle\Form\Extension\SerializerTypeExtension;
 
 class SerializerExtension extends AbstractExtension
 {

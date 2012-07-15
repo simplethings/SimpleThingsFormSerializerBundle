@@ -1,6 +1,6 @@
 <?php
 /**
- * SimpleThings FormExtraBundle
+ * SimpleThings FormSerializerBundle
  *
  * LICENSE
  *
@@ -11,13 +11,13 @@
  * to kontakt@beberlei.de so I can send you a copy immediately.
  */
 
-namespace SimpleThings\FormExtraBundle\Form\Extension;
+namespace SimpleThings\FormSerializerBundle\Form\Extension;
 
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-use SimpleThings\FormExtraBundle\Form\EventListener\BindRequestListener;
+use SimpleThings\FormSerializerBundle\Form\EventListener\BindRequestListener;
 
 class SerializerTypeExtension extends AbstractTypeExtension
 {

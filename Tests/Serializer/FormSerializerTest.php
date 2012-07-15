@@ -1,6 +1,6 @@
 <?php
 /**
- * SimpleThings FormExtraBundle
+ * SimpleThings FormSerializerBundle
  *
  * LICENSE
  *
@@ -11,7 +11,7 @@
  * to kontakt@beberlei.de so I can send you a copy immediately.
  */
 
-namespace SimpleThings\FormExtraBundle\Tests\Serializer;
+namespace SimpleThings\FormSerializerBundle\Tests\Serializer;
 
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormRegistry;
@@ -22,9 +22,9 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\HttpFoundation\Request;
 
-use SimpleThings\FormExtraBundle\Serializer\FormSerializer;
-use SimpleThings\FormExtraBundle\Serializer\EncoderRegistry;
-use SimpleThings\FormExtraBundle\Form\SerializerExtension;
+use SimpleThings\FormSerializerBundle\Serializer\FormSerializer;
+use SimpleThings\FormSerializerBundle\Serializer\EncoderRegistry;
+use SimpleThings\FormSerializerBundle\Form\SerializerExtension;
 
 class FormSerializerTest extends \PHPUnit_Framework_TestCase
 {
