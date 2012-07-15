@@ -1,0 +1,42 @@
+{
+    "hash": "ed013d846b0e25ad5b6d2efa9f8cba9c",
+    "packages": [
+        {
+            "package": "doctrine/common",
+            "version": "dev-master",
+            "alias-pretty-version": "2.3.x-dev",
+            "alias-version": "2.3.9999999.9999999-dev"
+        },
+        {
+            "package": "doctrine/common",
+            "version": "dev-master",
+            "source-reference": "ee3aeae972386d761d8358bab3d67e246f4261ba"
+        },
+        {
+            "package": "symfony/symfony",
+            "version": "dev-master",
+            "source-reference": "5fb72144da343e239efae6158e4696c1270076b0"
+        },
+        {
+            "package": "twig/twig",
+            "version": "dev-master",
+            "alias-pretty-version": "1.9.x-dev",
+            "alias-version": "1.9.9999999.9999999-dev"
+        },
+        {
+            "package": "twig/twig",
+            "version": "dev-master",
+            "source-reference": "3f9f587ba72f9da84266b93ee1d0fc025b6b010f"
+        }
+    ],
+    "packages-dev": null,
+    "aliases": [
+
+    ],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "symfony/form": 20,
+        "symfony/http-foundation": 20,
+        "symfony/serializer": 20
+    }
+}

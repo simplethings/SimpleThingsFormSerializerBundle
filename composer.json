@@ -1,0 +1,17 @@
+{
+    "name": "simplethings/form-serializer-bundle",
+    "description": "(De-)Serialization of Object-Graphs into XML/JSON based on Form Types",
+    "license": "MIT",
+    "authors": [
+        {"name": "Benjamin Eberlei", "email": "kontakt@beberlei.de"}
+    ],
+    "require": {
+        "symfony/form": "dev-master",
+        "symfony/http-foundation": "dev-master",
+        "symfony/serializer": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {"SimpleThings\\FormSerializerBundle\\":""}
+    },
+    "target-dir": "SimpleThings/FormSerializerBundle"
+}
