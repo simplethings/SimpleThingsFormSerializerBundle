@@ -141,5 +141,5 @@ response objects.
     3. show a HTTP 412 pre-condition failed with the form errors serialized into xml or json.
 - `formRedirect` will decide based on the response format:
     1. to redirect to the given url if its html (or config option `use_forwards = false`)
-    2. to forward to the route if its xml or json (and config option `use_fowards = true`)
+    2. to forward to the route if its xml or json (and config option `use_forwards = true`)
 
