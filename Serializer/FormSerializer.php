@@ -71,7 +71,7 @@ class FormSerializer
             $name    = $this->namingStrategy->translateName($child);
             $name    = $isXml && $options['serialize_attribute'] ? '@' . $name : $name;
 
-            if ($options['compound'] && ! $options['serialize_inline']) {
+            if ( ! $options['serialize_inline']) {
                 $data[$name][$options['serialize_xml_name']] = $this->serializeForm($child, $isXml);
             } else {
                 $data[$name] = $this->serializeForm($child, $isXml);

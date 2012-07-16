@@ -48,6 +48,8 @@ class FormSerializerTest extends \PHPUnit_Framework_TestCase
         $user->username = "beberlei";
         $user->email    = "kontakt@beberlei.de";
         $user->birthday = new \DateTime("1984-03-18");
+        $user->gender   = 'male';
+        $user->interests = array('sport', 'reading');
         $user->country  = "DE";
         $user->address  = $address;
 
@@ -56,6 +58,8 @@ class FormSerializerTest extends \PHPUnit_Framework_TestCase
             ->add('username', 'text')
             ->add('email', 'email')
             ->add('birthday', 'date', array('widget' => 'single_text'))
+            ->add('gender', 'choice', array('choices' => array('male' => 'Male', 'female' => 'Female')))
+            ->add('interests', 'choice', array('choices' => array('sport' => 'Sports', 'reading' => 'Reading'), 'multiple' => true, 'serialize_inline' => false, 'serialize_xml_name' => 'interest'))
             ->add('country', 'country')
             ->add('address', null, array('compound' => true, 'data_class' => __NAMESPACE__ . '\\Address'))
             ;
@@ -73,17 +77,25 @@ class FormSerializerTest extends \PHPUnit_Framework_TestCase
         $dom = new \DOMDocument;
         $dom->loadXml($xml);
         $dom->formatOutput = true;
+        $xml = $dom->saveXml();
 
-        /*
-           <?xml version="1.0"?>
-           <user>
-           <username>beberlei</username>
-           <email>kontakt@beberlei.de</email>
-           <birthday>1984-03-18</birthday>
-           <country>DE</country>
-           <address street="Somestreet 1" zip_code="12345" city="Bonn"/>
-           </user>
-         */
+        $this->assertEquals(<<<XML
+<?xml version="1.0"?>
+<user>
+  <username>beberlei</username>
+  <email>kontakt@beberlei.de</email>
+  <birthday>1984-03-18</birthday>
+  <gender>male</gender>
+  <interests>
+    <interest>sport</interest>
+    <interest>reading</interest>
+  </interests>
+  <country>DE</country>
+  <address street="Somestreet 1" zip_code="12345" city="Bonn"/>
+</user>
+
+XML
+            , $xml);
 
         $json = $formSerializer->serialize($user, $builder, 'json');
         /*
@@ -181,6 +193,8 @@ class User
     public $username;
     public $email;
     public $country;
+    public $gender;
+    public $interests;
     public $birthday;
     public $addresses;
     public $created;
