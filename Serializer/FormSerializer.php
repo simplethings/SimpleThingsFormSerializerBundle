@@ -72,11 +72,11 @@ class FormSerializer
 
             if ($isXml) {
                 $name = (!$options['serialize_xml_value'])
-                    ? ($options['serialize_attribute'] ? '@' . $name : $name)
+                    ? ($options['serialize_xml_attribute'] ? '@' . $name : $name)
                     : '#';
             }
 
-            if ( ! $options['serialize_inline']) {
+            if ( ! $options['serialize_xml_inline']) {
                 $data[$name][$options['serialize_xml_name']] = $this->serializeForm($child, $isXml);
             } else {
                 $data[$name] = $this->serializeForm($child, $isXml);

@@ -59,7 +59,7 @@ class FormSerializerTest extends \PHPUnit_Framework_TestCase
             ->add('email', 'email')
             ->add('birthday', 'date', array('widget' => 'single_text'))
             ->add('gender', 'choice', array('choices' => array('male' => 'Male', 'female' => 'Female')))
-            ->add('interests', 'choice', array('choices' => array('sport' => 'Sports', 'reading' => 'Reading'), 'multiple' => true, 'serialize_inline' => false, 'serialize_xml_name' => 'interest'))
+            ->add('interests', 'choice', array('choices' => array('sport' => 'Sports', 'reading' => 'Reading'), 'multiple' => true, 'serialize_xml_inline' => false, 'serialize_xml_name' => 'interest'))
             ->add('country', 'country')
             ->add('address', null, array('compound' => true, 'data_class' => __NAMESPACE__ . '\\Address'))
             ;
@@ -67,8 +67,8 @@ class FormSerializerTest extends \PHPUnit_Framework_TestCase
         $addressBuilder = $builder->get('address');
         $addressBuilder
             ->add('street', 'text', array('serialize_xml_value' => true))
-            ->add('zipCode', 'text', array('serialize_attribute' => true))
-            ->add('city', 'text', array('serialize_attribute' => true))
+            ->add('zipCode', 'text', array('serialize_xml_attribute' => true))
+            ->add('city', 'text', array('serialize_xml_attribute' => true))
             ;
 
         $formSerializer = new FormSerializer($factory, $registry);
@@ -221,7 +221,7 @@ class UserType extends AbstractType
             ->add('addresses', 'collection', array(
                 'type'               => new AddressType(),
                 'allow_add'          => true,
-                'serialize_inline'   => false,
+                'serialize_xml_inline'   => false,
                 'serialize_xml_name' => 'address'
             ))
         ;
@@ -246,9 +246,9 @@ class AddressType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('street', 'text', array('serialize_attribute' => true))
-            ->add('zipCode', 'text', array('serialize_attribute' => true))
-            ->add('city', 'text', array('serialize_attribute' => true))
+            ->add('street', 'text', array('serialize_xml_attribute' => true))
+            ->add('zipCode', 'text', array('serialize_xml_attribute' => true))
+            ->add('city', 'text', array('serialize_xml_attribute' => true))
         ;
     }
 
