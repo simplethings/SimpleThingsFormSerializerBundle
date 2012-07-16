@@ -69,7 +69,12 @@ class FormSerializer
         foreach ($form->getChildren() as $child) {
             $options = $child->getConfig()->getOptions();
             $name    = $this->namingStrategy->translateName($child);
-            $name    = $isXml && $options['serialize_attribute'] ? '@' . $name : $name;
+
+            if ($isXml) {
+                $name = (!$options['serialize_xml_value'])
+                    ? ($options['serialize_attribute'] ? '@' . $name : $name)
+                    : '#';
+            }
 
             if ( ! $options['serialize_inline']) {
                 $data[$name][$options['serialize_xml_name']] = $this->serializeForm($child, $isXml);

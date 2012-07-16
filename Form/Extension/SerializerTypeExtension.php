@@ -37,6 +37,7 @@ class SerializerTypeExtension extends AbstractTypeExtension
     {
         $resolver->setDefaults(array(
             'serialize_xml_name'   => 'entry',
+            'serialize_xml_value'  => false,
             'serialize_attribute'  => false,
             'serialize_inline'     => true,
         ));

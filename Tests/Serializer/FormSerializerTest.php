@@ -66,7 +66,7 @@ class FormSerializerTest extends \PHPUnit_Framework_TestCase
 
         $addressBuilder = $builder->get('address');
         $addressBuilder
-            ->add('street', 'text', array('serialize_attribute' => true))
+            ->add('street', 'text', array('serialize_xml_value' => true))
             ->add('zipCode', 'text', array('serialize_attribute' => true))
             ->add('city', 'text', array('serialize_attribute' => true))
             ;
@@ -91,7 +91,7 @@ class FormSerializerTest extends \PHPUnit_Framework_TestCase
     <interest>reading</interest>
   </interests>
   <country>DE</country>
-  <address street="Somestreet 1" zip_code="12345" city="Bonn"/>
+  <address zip_code="12345" city="Bonn">Somestreet 1</address>
 </user>
 
 XML
