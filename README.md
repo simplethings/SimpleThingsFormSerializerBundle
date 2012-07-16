@@ -94,7 +94,7 @@ Or if you use JSON:
 
 Deserializing will look familiar:
 
-    class UserController extends FormController
+    class UserController extends Controller
     {
         public function editAction(Request $request)
         {
@@ -104,13 +104,13 @@ Deserializing will look familiar:
             $form = $this->createForm(new UserType(), $user);
 
             if ($request->getMethod() !== 'POST') {
-                return $this->renderFormView($form, array('user' => $user));
+                return $this->renderFormFailure("MyBundle:User:edit.html.twig", $form, array('user' => $user));
             }
 
-            $form->bindRequest($request);
+            $form->bind($request);
 
             if ( ! $form->isValid()) {
-                return $this->renderFormView($form, array('user' => $user));
+                return $this->renderFormFailure("MyBundle:User:edit.html.twig", $form, array('user' => $user));
             }
 
             // do some business logic here
@@ -118,6 +118,16 @@ Deserializing will look familiar:
             $em->flush();
 
             return $this->formRedirect($form, $this->generateUrl('user_show', array('id' => $user->getId()), 201);
+        }
+
+        /* either render the form errors as xml/json or the html form again based on " _format" */
+        public function renderFormFailure($template, FormInterface $form, $parameters)
+        {
+        }
+
+        /* redirect OR 201 created, based on the "_format" */
+        public function formRedirect()
+        {
         }
     }
 
