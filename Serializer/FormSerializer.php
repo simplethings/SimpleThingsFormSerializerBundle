@@ -14,9 +14,10 @@
 namespace SimpleThings\FormSerializerBundle\Serializer;
 
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\Form\TypeInterface;
+use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
+use Symfony\Component\Form\Exception\UnexpectedTypeException;
 
 use SimpleThings\FormSerializerBundle\Serializer\NamingStrategy\CamelCaseStrategy;
 use SimpleThings\FormSerializerBundle\Serializer\NamingStrategy\NamingStrategy;
@@ -36,18 +37,18 @@ class FormSerializer
 
     public function serialize($object, $typeBuilder, $format)
     {
-        if ($typeBuilder instanceof TypeInterface) {
+        if ($typeBuilder instanceof FormTypeInterface) {
             $form = $this->factory->create($typeBuilder, $object);
         } else if ($typeBuilder instanceof FormBuilderInterface) {
             $form = $typeBuilder->getForm();
             $form->setData($object);
         } else {
-            throw new \RuntimeException();
+            throw new UnexpectedTypeException($typeBuilder, 'FormTypeInterface|FormBuilderInterface');
         }
 
         $options = $form->getConfig()->getOptions();
-        $xmlName = isset($options['serialize_xml_root'])
-            ? $options['serialize_xml_root']
+        $xmlName = isset($options['serialize_xml_name'])
+            ? $options['serialize_xml_name']
             : 'entry';
 
         $data = $this->serializeForm($form, $format == 'xml');
@@ -61,15 +62,34 @@ class FormSerializer
     private function serializeForm($form, $isXml)
     {
         if ( ! $form->hasChildren()) {
-            return $form->getViewData();
+            $options = $form->getConfig()->getOptions();
+            $value   = $form->getViewData();
+
+            if ( ! isset($options['serialize_collection_form'])) {
+                return $value;
+            }
+
+            $data = array();
+            foreach ($value as $child) {
+                $options['serialize_collection_form']->setData($child);
+                $data[] = $this->serializeForm($options['serialize_collection_form'], $isXml);
+            }
+
+            return $data;
         }
+
+        $data = array();
 
         foreach ($form->getChildren() as $child) {
             $options = $child->getConfig()->getOptions();
             $name    = $this->namingStrategy->translateName($child);
             $name    = $isXml && $options['serialize_attribute'] ? '@' . $name : $name;
 
-            $data[$name] = $this->serializeForm($child, $isXml);
+            if ($options['compound'] && ! $options['serialize_inline']) {
+                $data[$name][$options['serialize_xml_name']] = $this->serializeForm($child, $isXml);
+            } else {
+                $data[$name] = $this->serializeForm($child, $isXml);
+            }
         }
 
         return $data;

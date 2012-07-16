@@ -17,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\AbstractExtension;
 
 use SimpleThings\FormSerializerBundle\Form\Extension\SerializerTypeExtension;
+use SimpleThings\FormSerializerBundle\Form\Extension\CollectionTypeExtension;
 
 class SerializerExtension extends AbstractExtension
 {
@@ -29,7 +30,10 @@ class SerializerExtension extends AbstractExtension
 
     protected function loadTypeExtensions()
     {
-        return array(new SerializerTypeExtension($this->encoderRegistry));
+        return array(
+            new SerializerTypeExtension($this->encoderRegistry),
+            new CollectionTypeExtension(),
+        );
     }
 }
 

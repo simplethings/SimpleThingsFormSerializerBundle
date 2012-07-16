@@ -17,34 +17,20 @@ use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-use SimpleThings\FormSerializerBundle\Form\EventListener\BindRequestListener;
-
-class SerializerTypeExtension extends AbstractTypeExtension
+class CollectionTypeExtension extends AbstractTypeExtension
 {
-    private $encoderRegistry;
-
-    public function __construct($encoderRegistry)
-    {
-        $this->encoderRegistry = $encoderRegistry;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventSubscriber(new BindRequestListener($this->encoderRegistry));
-    }
-
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(array(
-            'serialize_xml_name'   => 'entry',
-            'serialize_attribute'  => false,
-            'serialize_inline'     => true,
-        ));
+        // todo optimize (away)
+        $builder->setAttribute(
+            'serialize_collection_form',
+            $builder->getFormFactory()->create($options['type'])
+        );
     }
 
     public function getExtendedType()
     {
-        return 'form';
+        return 'collection';
     }
 }
 
