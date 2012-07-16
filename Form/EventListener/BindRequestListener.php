@@ -79,6 +79,11 @@ class BindRequestListener implements EventSubscriberInterface
 
         foreach ($form->getChildren() as $child) {
             $options     = $child->getConfig()->getOptions();
+
+            if (isset($options['read_only']) && $options['read_only']) {
+                continue;
+            }
+
             $name        = $this->namingStrategy->translateName($child);
             $isAttribute = isset($options['serialize_attribute']) && $options['serialize_attribute'];
 
