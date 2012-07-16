@@ -204,7 +204,12 @@ class UserType extends AbstractType
             ->add('birthday', 'date', array('widget' => 'single_text'))
             ->add('country', 'country')
             ->add('address', new AddressType())
-            ->add('addresses', 'collection', array('type' => new AddressType(), 'serialize_inline' => false, 'serialize_xml_name' => 'address'))
+            ->add('addresses', 'collection', array(
+                'type'               => new AddressType(),
+                'allow_add'          => true,
+                'serialize_inline'   => false,
+                'serialize_xml_name' => 'address'
+            ))
         ;
     }
 

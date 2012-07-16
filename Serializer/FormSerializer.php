@@ -55,27 +55,13 @@ class FormSerializer
 
         $this->encoder->getEncoder('xml')->setRootNodeName($xmlName);
 
-        return $this->encoder
-                    ->encode($data, $format);
+        return $this->encoder->encode($data, $format);
     }
 
     private function serializeForm($form, $isXml)
     {
         if ( ! $form->hasChildren()) {
-            $options = $form->getConfig()->getOptions();
-            $value   = $form->getViewData();
-
-            if ( ! isset($options['serialize_collection_form'])) {
-                return $value;
-            }
-
-            $data = array();
-            foreach ($value as $child) {
-                $options['serialize_collection_form']->setData($child);
-                $data[] = $this->serializeForm($options['serialize_collection_form'], $isXml);
-            }
-
-            return $data;
+            return $form->getViewData();
         }
 
         $data = array();

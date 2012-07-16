@@ -63,7 +63,15 @@ class BindRequestListener implements EventSubscriberInterface
 
     private function unserializeForm($data, $form)
     {
-        if ( ! $form->hasChildren()) {
+        if ($form->hasAttribute('serialize_collection_form')) {
+            $form   = $form->getAttribute('serialize_collection_form');
+            $result = array();
+            foreach ($data as $key => $child) {
+                $result[$key] = $this->unserializeForm($child, $form);
+            }
+
+            return $result;
+        } else if ( ! $form->hasChildren()) {
             return $data;
         }
 
