@@ -1,23 +1,9 @@
 {
-    "hash": "652d95895a332f420a50c8be0a5aca87",
+    "hash": "128e1822eba48e0ab23c20215e808e57",
     "packages": [
         {
             "package": "doctrine/common",
-            "version": "dev-master",
-            "alias-pretty-version": "2.3.x-dev",
-            "alias-version": "2.3.9999999.9999999-dev"
-        },
-        {
-            "package": "doctrine/common",
-            "version": "dev-master",
-            "alias-pretty-version": "2.4.x-dev",
-            "alias-version": "2.4.9999999.9999999-dev"
-        },
-        {
-            "package": "doctrine/common",
-            "version": "dev-master",
-            "source-reference": "91a2875447a38a638cebbd679fa2081a84d5f7af",
-            "commit-date": "1342444390"
+            "version": "2.2.2"
         },
         {
             "package": "symfony/symfony",
@@ -44,12 +30,29 @@
             "commit-date": "1342424564"
         }
     ],
-    "packages-dev": null,
+    "packages-dev": [
+        {
+            "package": "jms/metadata",
+            "version": "1.1.1"
+        },
+        {
+            "package": "jms/serializer-bundle",
+            "version": "dev-master",
+            "alias-pretty-version": "0.9.x-dev",
+            "alias-version": "0.9.9999999.9999999-dev"
+        },
+        {
+            "package": "jms/serializer-bundle",
+            "version": "dev-master",
+            "source-reference": "6df19222b597ab6f44c67dde4499766a5ca1fb99",
+            "commit-date": "1341570103"
+        }
+    ],
     "aliases": [
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": [
-
-    ]
+    "stability-flags": {
+        "jms/serializer-bundle": 20
+    }
 }
