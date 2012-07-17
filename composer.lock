@@ -1,5 +1,5 @@
 {
-    "hash": "ed013d846b0e25ad5b6d2efa9f8cba9c",
+    "hash": "652d95895a332f420a50c8be0a5aca87",
     "packages": [
         {
             "package": "doctrine/common",
@@ -10,12 +10,26 @@
         {
             "package": "doctrine/common",
             "version": "dev-master",
-            "source-reference": "ee3aeae972386d761d8358bab3d67e246f4261ba"
+            "alias-pretty-version": "2.4.x-dev",
+            "alias-version": "2.4.9999999.9999999-dev"
+        },
+        {
+            "package": "doctrine/common",
+            "version": "dev-master",
+            "source-reference": "91a2875447a38a638cebbd679fa2081a84d5f7af",
+            "commit-date": "1342444390"
         },
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "5fb72144da343e239efae6158e4696c1270076b0"
+            "alias-pretty-version": "2.1.x-dev",
+            "alias-version": "2.1.9999999.9999999-dev"
+        },
+        {
+            "package": "symfony/symfony",
+            "version": "dev-master",
+            "source-reference": "f52ce6178243e4b11aa09bde147f684d596fb120",
+            "commit-date": "1342516073"
         },
         {
             "package": "twig/twig",
@@ -26,17 +40,16 @@
         {
             "package": "twig/twig",
             "version": "dev-master",
-            "source-reference": "3f9f587ba72f9da84266b93ee1d0fc025b6b010f"
+            "source-reference": "d45664045194ef62573c153c424508527105041e",
+            "commit-date": "1342424564"
         }
     ],
     "packages-dev": null,
     "aliases": [
 
     ],
-    "minimum-stability": "dev",
-    "stability-flags": {
-        "symfony/form": 20,
-        "symfony/http-foundation": 20,
-        "symfony/serializer": 20
-    }
+    "minimum-stability": "stable",
+    "stability-flags": [
+
+    ]
 }
