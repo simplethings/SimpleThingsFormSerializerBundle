@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="simple_things_form_serializer.serializer.encoder_registry.class">SimpleThings\FormSerializerBundle\Serializer\EncoderRegistry</parameter>
+        <parameter key="simple_things_form_serializer.form_serializer.class">SimpleThings\FormSerializerBundle\Serializer\FormSerializer</parameter>
+    </parameters>
+
+    <services>
+        <service id="simple_things_form_serializer.serializer.encoder_registry" class="%simple_things_form_serializer.serializer.encoder_registry.class%" public="false">
+            <argument type="collection">
+                <argument type="service"><service class="Symfony\Component\Serializer\Encoder\XmlEncoder" /></argument>
+                <argument type="service"><service class="Symfony\Component\Serializer\Encoder\JsonEncoder" /></argument>
+            </argument>
+        </service>
+
+        <service id="simple_things_form_serializer.form_serializer" class="%simple_things_form_serializer.form_serializer.class%">
+            <argument type="service" id="form.factory" />
+            <argument type="service" id="simple_things_form_serializer.serializer.encoder_registry" />
+        </service>
+
+        <service id="simple_things_form_serializer.form.extension.collection_type" class="SimpleThings\FormSerializerBundle\Form\Extension\CollectionTypeExtension" public="false">
+            <tag name="form.type_extension" alias="collection" />
+        </service>
+
+        <service id="simple_things_form_serializer.form.extension.serializer_type" class="SimpleThings\FormSerializerBundle\Form\Extension\SerializerTypeExtension" public="false">
+            <argument type="service" id="simple_things_form_serializer.serializer.encoder_registry" />
+            <tag name="form.type_extension" alias="form" />
+        </service>
+    </services>
+</container>
+

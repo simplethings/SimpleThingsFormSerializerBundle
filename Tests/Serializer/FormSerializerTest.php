@@ -44,14 +44,14 @@ class FormSerializerTest extends \PHPUnit_Framework_TestCase
         $address->zipCode = 12345;
         $address->city    = "Bonn";
 
-        $user           = new User();
-        $user->username = "beberlei";
-        $user->email    = "kontakt@beberlei.de";
-        $user->birthday = new \DateTime("1984-03-18");
-        $user->gender   = 'male';
+        $user            = new User();
+        $user->username  = "beberlei";
+        $user->email     = "kontakt@beberlei.de";
+        $user->birthday  = new \DateTime("1984-03-18");
+        $user->gender    = 'male';
         $user->interests = array('sport', 'reading');
-        $user->country  = "DE";
-        $user->address  = $address;
+        $user->country   = "DE";
+        $user->address   = $address;
 
         $builder = $factory->createBuilder('form', null, array('data_class' => __NAMESPACE__ . '\\User', 'serialize_xml_name' => 'user'));
         $builder
