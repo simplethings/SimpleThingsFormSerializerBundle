@@ -20,18 +20,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 
 use SimpleThings\FormSerializerBundle\Serializer\EncoderRegistry;
-use SimpleThings\FormSerializerBundle\Serializer\NamingStrategy\CamelCaseStrategy;
-use SimpleThings\FormSerializerBundle\Serializer\NamingStrategy\NamingStrategy;
+use SimpleThings\FormSerializerBundle\Serializer\SerializerOptions;
 
 class BindRequestListener implements EventSubscriberInterface
 {
     private $decoder;
-    private $namingStrategy;
+    private $options;
 
-    public function __construct(DecoderInterface $decoder, NamingStrategy $namingStrategy = null)
+    public function __construct(DecoderInterface $decoder, SerializerOptions $options = null)
     {
-        $this->decoder        = $decoder;
-        $this->namingStrategy = $namingStrategy ?: new CamelCaseStrategy();
+        $this->decoder = $decoder;
+        $this->options = $options ?: new SerializerOptions();
     }
 
     public static function getSubscribedEvents()
@@ -58,6 +57,17 @@ class BindRequestListener implements EventSubscriberInterface
         $content = $request->getContent();
         $data    = $this->decoder->decode($content, $format);
 
+        if ($format == "json" && $this->options->getIncludeRootInJson()) {
+            $options = $form->getConfig()->getOptions();
+            $xmlName = !empty($options['serializer_xml_name']) ? $options['serializer_xml_name'] : 'entry';
+            $data    = isset($data[$xmlName]) ? $data[$xmlName] : array();
+        }
+
+        if ($format === "xml" && $this->options->getApplicationXmlRootName()) {
+            $xmlRootName = $this->options->getApplicationXmlRootName();
+            $data        = isset($data[$xmlRootName]) ? $data[$xmlRootName] : array();
+        }
+
         $event->setData($this->unserializeForm($data, $form));
     }
 
@@ -77,6 +87,7 @@ class BindRequestListener implements EventSubscriberInterface
         }
 
         $result = array();
+        $namingStrategy = $this->options->getNamingStrategy();
 
         foreach ($form->getChildren() as $child) {
             $options     = $child->getConfig()->getOptions();
@@ -85,7 +96,7 @@ class BindRequestListener implements EventSubscriberInterface
                 continue;
             }
 
-            $name        = $this->namingStrategy->translateName($child);
+            $name        = $namingStrategy->translateName($child);
             $isAttribute = isset($options['serialize_xml_attribute']) && $options['serialize_xml_attribute'];
 
             if ($options['serialize_xml_value'] && isset($data['#'])) {

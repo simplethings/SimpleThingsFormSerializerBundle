@@ -16,23 +16,21 @@ namespace SimpleThings\FormSerializerBundle\Serializer;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
-
-use SimpleThings\FormSerializerBundle\Serializer\NamingStrategy\CamelCaseStrategy;
-use SimpleThings\FormSerializerBundle\Serializer\NamingStrategy\NamingStrategy;
 
 class FormSerializer
 {
     private $factory;
     private $encoder;
-    private $namingStrategy;
+    private $options;
 
-    public function __construct(FormFactoryInterface $factory, EncoderInterface $encoder, NamingStrategy $namingStrategy = null)
+    public function __construct(FormFactoryInterface $factory, EncoderInterface $encoder, SerializerOptions $options = null)
     {
-        $this->factory        = $factory;
-        $this->encoder        = $encoder;
-        $this->namingStrategy = $namingStrategy ?: new CamelCaseStrategy();
+        $this->factory = $factory;
+        $this->encoder = $encoder;
+        $this->options = $options ?: new SerializerOptions;
     }
 
     public function serialize($object, $typeBuilder, $format)
@@ -42,8 +40,13 @@ class FormSerializer
         } else if ($typeBuilder instanceof FormBuilderInterface) {
             $form = $typeBuilder->getForm();
             $form->setData($object);
+        } else if ($typeBuilder instanceof FormInterface) {
+            $form = $typeBuilder;
+            if ( ! $form->isBound()) {
+                $form->setData($object);
+            }
         } else {
-            throw new UnexpectedTypeException($typeBuilder, 'FormTypeInterface|FormBuilderInterface');
+            throw new UnexpectedTypeException($typeBuilder, 'FormInterface|FormTypeInterface|FormBuilderInterface');
         }
 
         $options = $form->getConfig()->getOptions();
@@ -53,7 +56,17 @@ class FormSerializer
 
         $data = $this->serializeForm($form, $format == 'xml');
 
-        $this->encoder->getEncoder('xml')->setRootNodeName($xmlName);
+        if ($format === 'json' && $this->options->getIncludeRootInJson()) {
+            $data = array($xmlName => $data);
+        }
+
+        if ($format === 'xml' && $this->options->getApplicationXmlRootName()) {
+            $data = array($this->options->getApplicationXmlRootName() => $data);
+        }
+
+        if ($format === 'xml') {
+            $this->encoder->getEncoder('xml')->setRootNodeName($xmlName);
+        }
 
         return $this->encoder->encode($data, $format);
     }
@@ -65,10 +78,11 @@ class FormSerializer
         }
 
         $data = array();
+        $namingStrategy = $this->options->getNamingStrategy();
 
         foreach ($form->getChildren() as $child) {
             $options = $child->getConfig()->getOptions();
-            $name    = $this->namingStrategy->translateName($child);
+            $name    = $namingStrategy->translateName($child);
 
             if ($isXml) {
                 $name = (!$options['serialize_xml_value'])
