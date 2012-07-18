@@ -1,22 +1,18 @@
 # FormSerializerBundle
 
-Bundle that helps solving the Serializer/Form component API missmatch. It leads to non-reusable
+Bundle that helps solving the Serializer/Form component API missmatch. This missmatch leads to non-reusable
 code in controllers, bloating every application by reimplementing everything over
-and over again.
-
-It allows to implement serializers for objects, using form types. For deserializing
-it uses the exact same API as "usual" form requests.
-
-Currently its nearly impossible to re-use REST-API calls and HTML/Form-based submits
+and over again. Currently its nearly impossible to re-use REST-API calls and HTML/Form-based submits
 in the same controller action. Additionally all the current serializer components share a
 common flaw: They cannot deserialize (update) into existing object graphs. Updating 
 object graphs is a problem the Form component already solves (perfectly!).
 
+This bundle solves these issues by hooking into the Form Framework. It allows to implement serializers for objects, using form types. For deserializing
+it uses the exact same API as "usual" form requests.
+
 The Form component is a very good serialization library, but up to now it only
 had one implementation: HTML Forms. This bundle adds support for hooking
 the Serializer Encoders into this process, XML and JSON supported by default.
-
-Another use-case could be mapping file uploads (CSV, XML) onto form types.
 
 ## Example
 
