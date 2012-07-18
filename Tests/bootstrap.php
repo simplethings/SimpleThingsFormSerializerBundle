@@ -1,6 +1,6 @@
 <?php
 
-if (!@include __DIR__ . '/../vendor/autoload.php') {
+if (!($loader = @include __DIR__ . '/../vendor/autoload.php')) {
     die(<<<'EOT'
 You must set up the project dependencies, run the following commands:
 wget http://getcomposer.org/composer.phar
@@ -20,3 +20,4 @@ spl_autoload_register(function($class) {
     }
 });
 
+Doctrine\Common\Annotations\AnnotationRegistry::registerLoader(array($loader, 'loadClass'));

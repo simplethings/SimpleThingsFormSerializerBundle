@@ -38,7 +38,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class {{class}} extends AbstractType
+class {{class}}Type extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -50,7 +50,7 @@ class {{class}} extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $options->setDefaults(array(
-            {{options}
+            {{defaults}}
         ));
     }
 
@@ -69,8 +69,8 @@ PHP;
 
     private function getType($type, $recursive = false)
     {
-        if (isset(self::$typeMap[$type])) {
-            return self::$typeMap[$type];
+        if (isset($this->typeMap[$type])) {
+            return $this->typeMap[$type];
         } else if (strpos($type, "array<") === 0) {
             if ( ! $recursive) {
                 return 'collection';
@@ -89,6 +89,8 @@ PHP;
             $parts = explode("\\", $type);
             return "new " . end($parts) . "Type()";
         }
+
+        return "text";
     }
 
     public function generateFormPhpCode($className)
@@ -97,7 +99,7 @@ PHP;
         $lines = array();
 
         $defaults = array(
-            "'data_class' => '" . $metadata->type . "'";
+            "'data_class' => '" . $metadata->name . "'"
         );
         if ($metadata->xmlRootName) {
             $efaults[] = "'serialize_xml_name' => '" . $metadata->xmlRootName . "'";
@@ -133,11 +135,26 @@ PHP;
             $options = $options ? ", array(" . implode(", ", $options) . ")" : "";
 
             $type = $this->getType($property->type);
-            $builder[] = "->add('" . $property->name . "', '" . $type . "'" . $options . ")";
+            $type = (strpos($type, " ") === false) ? "'" . $type . "'" : $type;
+
+            $builder[] = "->add('" . $property->name . "', " . $type .  $options . ")";
         }
 
         // TODO: Replace
-        return "";
+        $variables = array(
+            'name'      => strtolower($metadata->reflection->getShortName()),
+            'class'     => $metadata->reflection->getShortName(),
+            'namespace' => str_replace(array("Entity", "Document"), "Form", $metadata->reflection->getNamespaceName()),
+            'build'     => implode("\n            ", $builder),
+            'defaults'  => implode("\n", $defaults),
+        );
+
+        $code = self::$template;
+        foreach ($variables as $placeholder => $variable) {
+            $code = str_replace("{{".$placeholder."}}", $variable, $code);
+        }
+
+        return $code;
     }
 }
 
