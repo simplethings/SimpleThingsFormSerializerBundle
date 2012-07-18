@@ -66,7 +66,80 @@ PHP
     {
         $code = $this->converter->generateFormPHpCode(__NAMESPACE__ . "\\Foo");
 
-        echo $code;
+        $this->assertEquals(<<<'PHP'
+<?php
+
+namespace SimpleThings\FormSerializerBundle\Tests\Serializer;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
+class FooType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('object', new ObjectType())
+            ->add('int', 'integer')
+            ->add('date', 'datetime')
+        ;
+    }
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $options->setDefaults(array(
+            'data_class' => 'SimpleThings\FormSerializerBundle\Tests\Serializer\Foo'
+        ));
+    }
+
+    public function getName()
+    {
+        return 'foo';
+    }
+}
+
+PHP
+        , $code);
+    }
+
+    public function testConverterCollectionTypes()
+    {
+        $code = $this->converter->generateFormPHpCode(__NAMESPACE__ . "\\Bar");
+
+        $this->assertEquals(<<<'PHP'
+<?php
+
+namespace SimpleThings\FormSerializerBundle\Tests\Serializer;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
+class BarType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('objects', 'collection', array('type' => new ObjectType(), 'serialize_xml_inline' => false, 'serialize_xml_name' => 'object'))
+        ;
+    }
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $options->setDefaults(array(
+            'data_class' => 'SimpleThings\FormSerializerBundle\Tests\Serializer\Bar'
+        ));
+    }
+
+    public function getName()
+    {
+        return 'bar';
+    }
+}
+
+PHP
+        , $code);
     }
 }
 
@@ -99,3 +172,16 @@ class Foo
      */
     public $date;
 }
+
+/**
+ * @XML\XmlRoot("bar")
+ */
+class Bar
+{
+    /**
+     * @XML\Type("array<SimpleThings\FormSerializerBundle\Tests\Serializer\Object>")
+     * @XML\XmlList(entry="object", inline=false)
+     */
+    public $objects;
+}
+

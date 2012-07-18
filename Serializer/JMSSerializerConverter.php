@@ -108,15 +108,16 @@ PHP;
         $builder = array();
         foreach ($metadata->propertyMetadata as $property) {
             $options = array();
+            $type    = $this->getType($property->type);
 
-            if ($property->xmlCollection) {
+            if ($property->xmlCollection || $type === 'collection') {
                 $options[] = "'type' => " . $this->getType($property->type, true);
                 if ( ! $property->xmlCollectionInline) {
-                    $options[] = "'serialize_xml_inline' => false,";
+                    $options[] = "'serialize_xml_inline' => false";
                 }
 
                 if ($property->xmlEntryName) {
-                    $options[] = "'serialize_xml_name' => '" . $property->xmlEntryName . "',";
+                    $options[] = "'serialize_xml_name' => '" . $property->xmlEntryName . "'";
                 }
             }
 
@@ -134,7 +135,6 @@ PHP;
 
             $options = $options ? ", array(" . implode(", ", $options) . ")" : "";
 
-            $type = $this->getType($property->type);
             $type = (strpos($type, " ") === false) ? "'" . $type . "'" : $type;
 
             $builder[] = "->add('" . $property->name . "', " . $type .  $options . ")";
