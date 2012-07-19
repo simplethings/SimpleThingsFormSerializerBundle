@@ -27,6 +27,7 @@ class JMSSerializerConverter
         'integer'  => 'integer',
         'double'   => 'number',
         'DateTime' => 'datetime',
+        'datetime' => 'datetime',
     );
 
     static private $template = <<<'PHP'
