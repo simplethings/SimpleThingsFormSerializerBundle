@@ -59,9 +59,9 @@ abstract class RestFormController extends Controller
      * Apply a form type to a given object and check for validity of model.
      *
      * @param FormTypeInterface $type
-     * @param object $data
-     * @param array $options
-     * @param string $dataName
+     * @param object            $data
+     * @param array             $options
+     * @param string            $dataName
      *
      * @return bool
      */
@@ -76,8 +76,8 @@ abstract class RestFormController extends Controller
      * Create and return a form (failure) response based on the HTTP Response format.
      *
      * @param FormInterface $data
-     * @param array $variables Additional data that is passed to an HTML view.
-     * @param string $dataName Alternative name for the form data variable in the view, if not the form name.
+     * @param array         $variables Additional data that is passed to an HTML view.
+     * @param string        $dataName  Alternative name for the form data variable in the view, if not the form name.
      *
      * @return Response
      */
@@ -100,8 +100,6 @@ abstract class RestFormController extends Controller
     /**
      * Simplifies the flash usage inside a controller.
      *
-     * @param string $type
-     * @param string $message
      * @return FlashBagInterface
      */
     protected function flash()
@@ -150,8 +148,8 @@ abstract class RestFormController extends Controller
      * Bind the current request against the given FormType and return the form.
      *
      * @param FormTypeInterface $type
-     * @param mixed $data
-     * @param array $options
+     * @param mixed             $data
+     * @param array             $options
      *
      * @return FormInterace
      */
