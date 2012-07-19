@@ -73,6 +73,10 @@ class BindRequestListener implements EventSubscriberInterface
             $form   = $form->getAttribute('serialize_collection_form');
             $result = array();
 
+            if (!isset($data[0])) {
+                $data = array($data); // XML special case
+            }
+
             foreach ($data as $key => $child) {
                 $result[$key] = $this->unserializeForm($child, $form);
             }
