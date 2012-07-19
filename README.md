@@ -14,6 +14,35 @@ The Form component is a very good serialization library, but up to now it only
 had one implementation: HTML Forms. This bundle adds support for hooking
 the Serializer Encoders into this process, XML and JSON supported by default.
 
+## New Form Options
+
+Using this bundle you gain new form type options. The "form" field is overwritten to have the following additional configuration keys:
+
+- 'serialize_xml_name' - Specifies the root xml name or the list entry xml name of elements, depending on its definition on a parent or child element. (Default: entry)
+- 'serialize_xml_value' - If true, this field will be the xml value of the parent field. Useful if you have small embedded types that have some attributes and one value. (Default: false)
+- 'serialize_xml_attribute' - If true, this field will be rendered as attribute on the parent in xml, not as an element. (Default: false)
+- 'serialize_xml_inline' - If true, no collection wrapper element will be rendered for a collection of elements. If false, wrap all elements. (Default: true)
+- 'serialize_name' - Custom name of the element in serialized form if it should deviate from the default naming strategy of turning camel-case into underscore. (Default: false)
+
+## Usage
+
+This bundle defines a new service to serialize forms inside the Symfony DIC:
+
+    <?php
+    class UserController extends Controller
+    {
+        public function showAction(User $user)
+        {
+            $serializer = $this->get('form_serializer');
+            $xml = $serializer->serialize($user, new UserType(), 'xml');
+
+            return new Response($xml, 200, array('Content-Type' => 'text/xml'));
+        }
+    }
+
+It also registers a Listener inside the form framework that binds XML and JSON requests
+onto a form. Just call `$form->bind($request)` as shown in the example.
+
 ## Example
 
 Take a usual form, extended with some details about serialization:
@@ -32,9 +61,9 @@ Take a usual form, extended with some details about serialization:
             $builder
                 ->add('username', 'text')
                 ->add('email', 'email')
-                ->add('country', 'entity', array('serialize_link_relations' => array('self' => array('route' => 'country_view', 'type' => 'vnd.myapp.country;text/xml'))))
-                ->add('addresses', 'collection', array('type' => 'address', 'serialize_xml_entry' => 'address'))
-                ->add('created', 'datetime', array('serialize_only' => true))
+                ->add('country', 'entity')
+                ->add('addresses', 'collection', array('type' => 'address', 'serialize_xml_name' => 'address'))
+                ->add('created', 'datetime', array('read_only' => true))
             ;
         }
 
@@ -47,9 +76,7 @@ Take a usual form, extended with some details about serialization:
         {
             $options->setDefaults(array(
                 'data_class' => 'Acme\DemoBundle\Entity\User',
-                'serialize_xml_root' => 'user',
-                'serialize_json_root' => 'user',
-                'serialize_link_relations' => array('self' => 'user_view', 'type' => 'vnd.myapp.user;text/xml')
+                'serialize_xml_name' => 'user',
             ));
         }
     }
