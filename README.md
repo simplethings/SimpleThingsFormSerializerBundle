@@ -18,11 +18,11 @@ the Serializer Encoders into this process, XML and JSON supported by default.
 
 Using this bundle you gain new form type options. The "form" field is overwritten to have the following additional configuration keys:
 
-- 'serialize_xml_name' - Specifies the root xml name or the list entry xml name of elements, depending on its definition on a parent or child element. (Default: entry)
-- 'serialize_xml_value' - If true, this field will be the xml value of the parent field. Useful if you have small embedded types that have some attributes and one value. (Default: false)
-- 'serialize_xml_attribute' - If true, this field will be rendered as attribute on the parent in xml, not as an element. (Default: false)
-- 'serialize_xml_inline' - If true, no collection wrapper element will be rendered for a collection of elements. If false, wrap all elements. (Default: true)
-- 'serialize_name' - Custom name of the element in serialized form if it should deviate from the default naming strategy of turning camel-case into underscore. (Default: false)
+- `serialize_xml_name` - Specifies the root xml name or the list entry xml name of elements, depending on its definition on a parent or child element. (Default: entry)
+- `serialize_xml_value` - If true, this field will be the xml value of the parent field. Useful if you have small embedded types that have some attributes and one value. (Default: false)
+- `serialize_xml_attribute` - If true, this field will be rendered as attribute on the parent in xml, not as an element. (Default: false)
+- `serialize_xml_inline` - If true, no collection wrapper element will be rendered for a collection of elements. If false, wrap all elements. (Default: true)
+- `serialize_name` - Custom name of the element in serialized form if it should deviate from the default naming strategy of turning camel-case into underscore. (Default: false)
 
 ## Usage
 
@@ -42,6 +42,12 @@ This bundle defines a new service to serialize forms inside the Symfony DIC:
 
 It also registers a Listener inside the form framework that binds XML and JSON requests
 onto a form. Just call `$form->bind($request)` as shown in the example.
+
+If you want to convert JMS Serializer based configuration to FormTypes you can use the command that is included:
+
+    php app/console simplethings:convert-jms-metadata "className"
+
+Since JMS Serializer automatically builds metadata for every class, you can use this command to generate form types for any existing class for you.
 
 ## Example
 
