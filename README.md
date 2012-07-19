@@ -52,10 +52,17 @@ Since JMS Serializer automatically builds metadata for every class, you can use 
 
 ## Configuration
 
+Default DIC (config.yml) configuration:
+
     simple_things_form_serializer:
         include_root_in_json: false
         application_xml_root_name: ~
         naming_strategy: camel_case
+        encoders:
+            xml: true
+            json: true
+
+Dependency Injection tag named `simple_things_form_serializer.encoder` to add more encoders.
 
 ## Example
 

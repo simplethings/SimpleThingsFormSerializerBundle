@@ -19,6 +19,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use SimpleThings\FormSerializerBundle\DependencyInjection\SimpleThingsFormSerializerExtension;
 use SimpleThings\FormSerializerBundle\Serializer\EncoderRegistry;
 use SimpleThings\FormSerializerBundle\Form\SerializerExtension;
+use SimpleThings\FormSerializerBundle\DependencyInjection\CompilerPass\EncoderPass;
 
 class ContainerTest extends \PHPUnit_Framework_TestCase
 {
@@ -41,7 +42,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $container->set('form.factory', $factory);
         $loader->load(array(array()), $container);
 
-        $container->getCompilerPassConfig()->setOptimizationPasses(array(new ResolveDefinitionTemplatesPass()));
+        $container->getCompilerPassConfig()->setOptimizationPasses(array(new ResolveDefinitionTemplatesPass(), new EncoderPass()));
         $container->getCompilerPassConfig()->setRemovingPasses(array());
         $container->compile();
 

@@ -11,11 +11,11 @@
 
     <services>
         <service id="simple_things_form_serializer.serializer.encoder_registry" class="%simple_things_form_serializer.serializer.encoder_registry.class%" public="false">
-            <argument type="collection">
-                <argument type="service"><service class="Symfony\Component\Serializer\Encoder\XmlEncoder" /></argument>
-                <argument type="service"><service class="Symfony\Component\Serializer\Encoder\JsonEncoder" /></argument>
-            </argument>
+            <argument type="collection" />
         </service>
+
+        <service id="simple_things_form_serializer.serializer.encoder.xml" class="Symfony\Component\Serializer\Encoder\XmlEncoder" />
+        <service id="simple_things_form_serializer.serializer.encoder.json" class="Symfony\Component\Serializer\Encoder\JsonEncoder" />
 
         <service id="simple_things_form_serializer.serializer.options" class="SimpleThings\FormSerializerBundle\Serializer\SerializerOptions" public="false">
             <call method="setNamingStrategy">

@@ -27,6 +27,13 @@ class Configuration implements ConfigurationInterface
                 ->booleanNode('include_root_in_json')->defaultFalse()->end()
                 ->scalarNode('application_xml_root_name')->defaultNull()->end()
                 ->scalarNode('naming_strategy')->defaultValue('camel_case')->end()
+                ->arrayNode('encoders')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->booleanNode('xml')->defaultTrue()->end()
+                        ->booleanNode('json')->defaultTrue()->end()
+                    ->end()
+                ->end()
             ->end()
         ->end();
     }

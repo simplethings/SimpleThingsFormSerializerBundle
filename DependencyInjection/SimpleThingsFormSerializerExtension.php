@@ -34,6 +34,13 @@ class SimpleThingsFormSerializerExtension extends Extension
 
         $container->setParameter('simple_things_form_serializer.options.include_root_in_json', $config['include_root_in_json']);
         $container->setParameter('simple_things_form_serializer.options.application_xml_root_name', $config['application_xml_root_name']);
+
+        foreach ($config['encoders'] as $format => $enabled) {
+            if ($enabled) {
+                $def = $container->getDefinition('simple_things_form_serializer.serializer.encoder.' . $format);
+                $def->addTag('simple_things_form_serializer.encoder');
+            }
+        }
     }
 }
 

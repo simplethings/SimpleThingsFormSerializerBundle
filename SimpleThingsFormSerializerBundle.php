@@ -16,7 +16,14 @@ namespace SimpleThings\FormSerializerBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+
+use SimpleThings\FormSerializerBundle\DependencyInjection\CompilerPass\EncoderPass;
 
 class SimpleThingsFormSerializerBundle extends Bundle
 {
+    public function build(ContainerBuilder $builder)
+    {
+        $builder->addCompilerPass(new EncoderPass());
+    }
 }
