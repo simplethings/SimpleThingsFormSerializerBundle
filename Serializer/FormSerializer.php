@@ -60,11 +60,14 @@ class FormSerializer
             $data = array($xmlName => $data);
         }
 
-        if ($format === 'xml' && $this->options->getApplicationXmlRootName()) {
-            $data = array($this->options->getApplicationXmlRootName() => $data);
-        }
-
         if ($format === 'xml') {
+            $appXmlName = $this->options->getApplicationXmlRootName();
+
+            if ($appXmlName) {
+                $data    = array($xmlName => $data);
+                $xmlName = $appXmlName;
+            }
+
             $this->encoder->getEncoder('xml')->setRootNodeName($xmlName);
         }
 
