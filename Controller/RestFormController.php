@@ -27,7 +27,7 @@ use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
  *   public function updateAction(User $user)
  *   {
  *       if ( ! $this->applyForm(new UserType, $user)) {
- *           $this->renderForm($this->form);
+ *           return $this->renderForm($this->form);
  *       }
  *
  *       $userService = $this->get('user_service');
@@ -46,6 +46,14 @@ abstract class RestFormController extends Controller
      * @var FormInterface
      */
     protected $form;
+
+    /**
+     * @return SimpleThings\FormSerializerBundle\Serializer\FormSerializer
+     */
+    protected function getFormSerializer()
+    {
+        return $this->get('form_serializer');
+    }
 
     /**
      * Apply a form type to a given object and check for validity of model.
