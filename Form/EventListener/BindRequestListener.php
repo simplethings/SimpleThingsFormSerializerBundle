@@ -60,7 +60,7 @@ class BindRequestListener implements EventSubscriberInterface
         $data    = $this->decoder->decode($content, $format);
 
         if ( ($format === "json" && $this->options->getIncludeRootInJson()) ||
-             ($format === "xml" && $this->options->getApplicationXmlRootName())) {
+             ($format === "xml" && $this->options->getApplicationXmlRootName() && $this->options->getApplicationXmlRootName() !== $xmlName)) {
             $data = isset($data[$xmlName]) ? $data[$xmlName] : array();
         }
 

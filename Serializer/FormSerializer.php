@@ -63,7 +63,7 @@ class FormSerializer
         if ($format === 'xml') {
             $appXmlName = $this->options->getApplicationXmlRootName();
 
-            if ($appXmlName) {
+            if ($appXmlName && $appXmlName !== $xmlName) {
                 $data    = array($xmlName => $data);
                 $xmlName = $appXmlName;
             }
