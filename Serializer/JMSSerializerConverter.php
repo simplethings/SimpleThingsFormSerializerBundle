@@ -50,7 +50,7 @@ class {{class}}Type extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $options->setDefaults(array(
+        $resolver->setDefaults(array(
             {{defaults}}
         ));
     }
