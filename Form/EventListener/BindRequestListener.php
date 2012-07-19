@@ -55,17 +55,13 @@ class BindRequestListener implements EventSubscriberInterface
         }
 
         $content = $request->getContent();
+        $options = $form->getConfig()->getOptions();
+        $xmlName = !empty($options['serializer_xml_name']) ? $options['serializer_xml_name'] : 'entry';
         $data    = $this->decoder->decode($content, $format);
 
-        if ($format == "json" && $this->options->getIncludeRootInJson()) {
-            $options = $form->getConfig()->getOptions();
-            $xmlName = !empty($options['serializer_xml_name']) ? $options['serializer_xml_name'] : 'entry';
-            $data    = isset($data[$xmlName]) ? $data[$xmlName] : array();
-        }
-
-        if ($format === "xml" && $this->options->getApplicationXmlRootName()) {
-            $xmlRootName = $this->options->getApplicationXmlRootName();
-            $data        = isset($data[$xmlRootName]) ? $data[$xmlRootName] : array();
+        if ( ($format === "json" && $this->options->getIncludeRootInJson()) ||
+             ($format === "xml" && $this->options->getApplicationXmlRootName())) {
+            $data = isset($data[$xmlName]) ? $data[$xmlName] : array();
         }
 
         $event->setData($this->unserializeForm($data, $form));
