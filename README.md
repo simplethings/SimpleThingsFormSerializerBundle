@@ -23,6 +23,7 @@ Using this bundle you gain new form type options. The "form" field is overwritte
 - `serialize_xml_attribute` - If true, this field will be rendered as attribute on the parent in xml, not as an element. (Default: false)
 - `serialize_xml_inline` - If true, no collection wrapper element will be rendered for a collection of elements. If false, wrap all elements. (Default: true)
 - `serialize_name` - Custom name of the element in serialized form if it should deviate from the default naming strategy of turning camel-case into underscore. (Default: false)
+- `serialize_only` - If true the field will be removed from `FormView` and therefor only be present in the serialized data (json, xml) 
 
 ## Usage
 
