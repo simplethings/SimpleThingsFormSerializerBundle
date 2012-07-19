@@ -22,7 +22,7 @@ namespace SimpleThings\FormSerializerBundle\Controller;
  *   public function updateAction(User $user)
  *   {
  *       if ( ! $this->applyForm(new UserType, $user)) {
- *           $this->renderForm($this->form);
+ *           return $this->renderForm($this->form);
  *       }
  *
  *       $userService = $this->get('user_service');
@@ -41,6 +41,14 @@ trait RestFormHelper
      * @var FormInterface
      */
     protected $form;
+
+    /**
+     * @return SimpleThings\FormSerializerBundle\Serializer\FormSerializer
+     */
+    protected function getFormSerializer()
+    {
+        return $this->container->get('form_serializer');
+    }
 
     /**
      * Apply a form type to a given object and check for validity of model.
