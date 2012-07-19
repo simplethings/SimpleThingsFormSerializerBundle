@@ -98,7 +98,7 @@ Produces:
     <user>
         <username>beberlei</username>
         <email>kontakt@beberlei.de</email>
-        <country key="de" label="Deutschland" />
+        <country>de</country>
         <addresses>
             <address>
                 <street>Foostreet 1</street>
@@ -113,7 +113,7 @@ Or if you use JSON:
         "user": {
             "username": "beberlei",
             "email": "kontakt@beberlei.de",
-            "country": {"key": "de", "label": "Deutschland"},
+            "country": "de",
             "addresses": [
                 {"street": "Foostreet 1"}
             ],
