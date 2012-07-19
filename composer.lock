@@ -1,5 +1,5 @@
 {
-    "hash": "a6f3612e3791211cf681c42b43147955",
+    "hash": "59245316137f17a8deb5d804d545cbf8",
     "packages": [
         {
             "package": "doctrine/common",
@@ -7,11 +7,27 @@
         },
         {
             "package": "symfony/symfony",
-            "version": "v2.1.0-BETA3"
+            "version": "dev-master",
+            "alias-pretty-version": "2.1.x-dev",
+            "alias-version": "2.1.9999999.9999999-dev"
+        },
+        {
+            "package": "symfony/symfony",
+            "version": "dev-master",
+            "source-reference": "67bf84d7c5e3dee8c1c8b81874a03bb089e74362",
+            "commit-date": "1342708743"
         },
         {
             "package": "twig/twig",
-            "version": "v1.9.0"
+            "version": "dev-master",
+            "alias-pretty-version": "1.9.x-dev",
+            "alias-version": "1.9.9999999.9999999-dev"
+        },
+        {
+            "package": "twig/twig",
+            "version": "dev-master",
+            "source-reference": "7c3b987742ed8512ba70712e0ff8862c52eebbc9",
+            "commit-date": "1342675769"
         }
     ],
     "packages-dev": [

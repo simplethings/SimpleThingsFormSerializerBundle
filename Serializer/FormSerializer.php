@@ -54,7 +54,12 @@ class FormSerializer
             ? $options['serialize_xml_name']
             : 'entry';
 
-        $data = $this->serializeForm($form, $format == 'xml');
+        if ($form->isBound() && ! $form->isValid()) {
+            $data    = $this->serializeFormError($form);
+            $xmlName = 'form';
+        } else {
+            $data = $this->serializeForm($form, $format == 'xml');
+        }
 
         if ($format === 'json' && $this->options->getIncludeRootInJson()) {
             $data = array($xmlName => $data);
@@ -74,7 +79,26 @@ class FormSerializer
         return $this->encoder->encode($data, $format);
     }
 
-    private function serializeForm($form, $isXml)
+    private function serializeFormError(FormInterface $form)
+    {
+        $result = array();
+
+        foreach ($form->getErrors() as $error) {
+            $result['error'][] = $error->getMessage();
+        }
+
+        foreach ($form->getChildren() as $child) {
+            $errors = $this->serializeFormError($child);
+
+            if ($errors) {
+                $result['children'][$child->getName()] = $errors;
+            }
+        }
+
+        return $result;
+    }
+
+    private function serializeForm(FormInterface $form, $isXml)
     {
         if ( ! $form->hasChildren()) {
             return $form->getViewData();

@@ -61,11 +61,10 @@ abstract class RestFormController extends Controller
      * @param FormTypeInterface $type
      * @param object            $data
      * @param array             $options
-     * @param string            $dataName
      *
      * @return bool
      */
-    protected function applyForm(FormTypeInterface $type, $data = null, array $options = array(), $dataName = null)
+    protected function applyForm(FormTypeInterface $type, $data = null, array $options = array())
     {
         $this->form = $this->bindForm($type, $data, $options);
 
@@ -77,19 +76,17 @@ abstract class RestFormController extends Controller
      *
      * @param FormInterface $data
      * @param array         $variables Additional data that is passed to an HTML view.
-     * @param string        $dataName  Alternative name for the form data variable in the view, if not the form name.
      *
      * @return Response
      */
-    protected function renderForm(FormInterface $form = null, array $variables = array(), $dataName = null)
+    protected function renderForm(FormInterface $form = null, array $variables = array())
     {
         $form   = $form ?: $this->form;
         $format = $this->getRequest()->getRequestFormat();
 
         if ($format === "html") {
-            $dataName             = $dataName ?: $form->getName();
-            $variables['form']    = $form->createView();
-            $variables[$dataName] = $form->getData();
+            $variables['form'] = $form->createView();
+            $variables['data'] = $form->getData();
 
             return $variables;
         }

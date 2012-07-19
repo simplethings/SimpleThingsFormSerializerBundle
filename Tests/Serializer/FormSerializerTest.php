@@ -14,6 +14,7 @@
 namespace SimpleThings\FormSerializerBundle\Tests\Serializer;
 
 use Symfony\Component\Form\FormFactory;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormRegistry;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\AbstractType;
@@ -185,6 +186,48 @@ XML
         $form->bind($request);
 
         $this->assertEquals(2, count($user2->addresses));
+    }
+
+    public function testSerializeErrors()
+    {
+        $registry = new EncoderRegistry(array(new XmlEncoder, new JsonEncoder));
+        $factory = new FormFactory(new FormRegistry(array(
+                        new CoreExtension(),
+                        new SerializerExtension($registry)
+                        )));
+        $user2 = new User();
+        $form = $factory->create(new UserType(), $user2);
+        $xml = <<<XML
+<?xml version="1.0"?>
+<user>
+  <username>beberlei</username>
+  <email>kontakt@beberlei.de</email>
+  <birthday>1984-03-18</birthday>
+  <gender>male</gender>
+  <interests>
+    <interest>sport</interest>
+    <interest>reading</interest>
+  </interests>
+  <country>DE</country>
+  <address zip_code="12345" city="Bonn">Somestreet 1</address>
+</user>
+
+XML;
+
+        $request = new Request(array(), array(),array(),array(),array(),array(
+                    'CONTENT_TYPE' => 'text/xml',
+                    ), $xml);
+        $form->bind($request);
+
+        $form->addError(new FormError("foo"));
+        $form->addError(new FormError("bar"));
+        $form->get('username')->addError(new FormError("bar"));
+        $form->get('email')->addError(new FormError("bar"));
+
+        $formSerializer = new FormSerializer($factory, $registry);
+        $xml = $formSerializer->serialize(null, $form, 'xml');
+
+        $this->assertEquals("<?xml version=\"1.0\"?>\n<form><error>foo</error><error>bar</error><children><username><error>bar</error></username><email><error>bar</error></email></children></form>\n", $xml);
     }
 }
 
