@@ -47,7 +47,7 @@ class ObjectType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $options->setDefaults(array(
+        $resolver->setDefaults(array(
             'data_class' => 'SimpleThings\FormSerializerBundle\Tests\Serializer\Object'
         ));
     }
@@ -88,7 +88,7 @@ class FooType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $options->setDefaults(array(
+        $resolver->setDefaults(array(
             'data_class' => 'SimpleThings\FormSerializerBundle\Tests\Serializer\Foo'
         ));
     }
@@ -127,7 +127,7 @@ class BarType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $options->setDefaults(array(
+        $resolver->setDefaults(array(
             'data_class' => 'SimpleThings\FormSerializerBundle\Tests\Serializer\Bar'
         ));
     }
