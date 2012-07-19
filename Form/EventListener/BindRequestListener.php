@@ -56,7 +56,7 @@ class BindRequestListener implements EventSubscriberInterface
 
         $content = $request->getContent();
         $options = $form->getConfig()->getOptions();
-        $xmlName = !empty($options['serializer_xml_name']) ? $options['serializer_xml_name'] : 'entry';
+        $xmlName = !empty($options['serialize_xml_name']) ? $options['serialize_xml_name'] : 'entry';
         $data    = $this->decoder->decode($content, $format);
 
         if ( ($format === "json" && $this->options->getIncludeRootInJson()) ||
