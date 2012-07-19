@@ -1,33 +1,17 @@
 {
-    "hash": "128e1822eba48e0ab23c20215e808e57",
+    "hash": "a6f3612e3791211cf681c42b43147955",
     "packages": [
         {
             "package": "doctrine/common",
-            "version": "2.2.2"
+            "version": "2.3.0-BETA1"
         },
         {
             "package": "symfony/symfony",
-            "version": "dev-master",
-            "alias-pretty-version": "2.1.x-dev",
-            "alias-version": "2.1.9999999.9999999-dev"
-        },
-        {
-            "package": "symfony/symfony",
-            "version": "dev-master",
-            "source-reference": "f52ce6178243e4b11aa09bde147f684d596fb120",
-            "commit-date": "1342516073"
+            "version": "v2.1.0-BETA3"
         },
         {
             "package": "twig/twig",
-            "version": "dev-master",
-            "alias-pretty-version": "1.9.x-dev",
-            "alias-version": "1.9.9999999.9999999-dev"
-        },
-        {
-            "package": "twig/twig",
-            "version": "dev-master",
-            "source-reference": "d45664045194ef62573c153c424508527105041e",
-            "commit-date": "1342424564"
+            "version": "v1.9.0"
         }
     ],
     "packages-dev": [
@@ -44,14 +28,14 @@
         {
             "package": "jms/serializer-bundle",
             "version": "dev-master",
-            "source-reference": "6df19222b597ab6f44c67dde4499766a5ca1fb99",
-            "commit-date": "1341570103"
+            "source-reference": "6bd1105030c7cc12fbd8ac64cb3a926777806045",
+            "commit-date": "1342557364"
         }
     ],
     "aliases": [
 
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "beta",
     "stability-flags": {
         "jms/serializer-bundle": 20
     }

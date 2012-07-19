@@ -6,6 +6,7 @@
     "authors": [
         {"name": "Benjamin Eberlei", "email": "kontakt@beberlei.de"}
     ],
+    "minimum-stability" : "beta",
     "require": {
         "symfony/form": "2.1.*",
         "symfony/http-foundation": "2.1.*",
