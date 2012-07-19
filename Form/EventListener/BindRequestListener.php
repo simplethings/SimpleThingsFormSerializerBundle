@@ -92,7 +92,7 @@ class BindRequestListener implements EventSubscriberInterface
                 continue;
             }
 
-            $name        = $namingStrategy->translateName($child);
+            $name        = $options['serialize_name'] ?: $namingStrategy->translateName($child);
             $isAttribute = isset($options['serialize_xml_attribute']) && $options['serialize_xml_attribute'];
 
             if ($options['serialize_xml_value'] && isset($data['#'])) {

@@ -85,7 +85,7 @@ class FormSerializer
 
         foreach ($form->getChildren() as $child) {
             $options = $child->getConfig()->getOptions();
-            $name    = $namingStrategy->translateName($child);
+            $name    = $options['serialize_name'] ?: $namingStrategy->translateName($child);
 
             if ($isXml) {
                 $name = (!$options['serialize_xml_value'])

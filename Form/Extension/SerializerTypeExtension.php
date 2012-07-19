@@ -40,6 +40,7 @@ class SerializerTypeExtension extends AbstractTypeExtension
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
+            'serialize_name'          => false,
             'serialize_xml_name'      => 'entry',
             'serialize_xml_value'     => false,
             'serialize_xml_attribute' => false,
