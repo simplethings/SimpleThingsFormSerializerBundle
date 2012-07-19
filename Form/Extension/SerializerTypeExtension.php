@@ -16,21 +16,25 @@ namespace SimpleThings\FormSerializerBundle\Form\Extension;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Serializer\Encoder\DecoderInterface;
 
 use SimpleThings\FormSerializerBundle\Form\EventListener\BindRequestListener;
+use SimpleThings\FormSerializerBundle\Serializer\SerializerOptions;
 
 class SerializerTypeExtension extends AbstractTypeExtension
 {
     private $encoderRegistry;
+    private $options;
 
-    public function __construct($encoderRegistry)
+    public function __construct(DecoderInterface $encoderRegistry, SerializerOptions $options = null)
     {
         $this->encoderRegistry = $encoderRegistry;
+        $this->options         = $options ?: new SerializerOptions();
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventSubscriber(new BindRequestListener($this->encoderRegistry));
+        $builder->addEventSubscriber(new BindRequestListener($this->encoderRegistry, $this->options));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
