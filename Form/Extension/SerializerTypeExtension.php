@@ -15,6 +15,8 @@ namespace SimpleThings\FormSerializerBundle\Form\Extension;
 
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormViewInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 
@@ -37,6 +39,17 @@ class SerializerTypeExtension extends AbstractTypeExtension
         $builder->addEventSubscriber(new BindRequestListener($this->encoderRegistry, $this->options));
     }
 
+    public function finishView(FormViewInterface $view, FormInterface $form, array $options)
+    {
+        foreach ($form->getChildren() as $identifier => $child) {
+            if (false == $child->getConfig()->getOption('serialize_only')) {
+                continue;
+            }
+
+            $view->remove($identifier);
+        }
+    }
+
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
@@ -45,6 +58,7 @@ class SerializerTypeExtension extends AbstractTypeExtension
             'serialize_xml_value'     => false,
             'serialize_xml_attribute' => false,
             'serialize_xml_inline'    => true,
+            'serialize_only'          => false,
         ));
     }
 

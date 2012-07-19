@@ -60,7 +60,7 @@ class FormSerializerTest extends \PHPUnit_Framework_TestCase
             ->add('birthday', 'date', array('widget' => 'single_text'))
             ->add('gender', 'choice', array('choices' => array('male' => 'Male', 'female' => 'Female')))
             ->add('interests', 'choice', array('choices' => array('sport' => 'Sports', 'reading' => 'Reading'), 'multiple' => true, 'serialize_xml_inline' => false, 'serialize_xml_name' => 'interest'))
-            ->add('country', 'country')
+            ->add('country', 'country', array('serialize_only' => true))
             ->add('address', null, array('compound' => true, 'data_class' => __NAMESPACE__ . '\\Address'))
             ;
 
