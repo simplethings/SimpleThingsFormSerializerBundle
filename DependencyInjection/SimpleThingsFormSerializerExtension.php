@@ -17,6 +17,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Config\Definition\Processor;
 
 class SimpleThingsFormSerializerExtension extends Extension
 {
@@ -25,7 +26,14 @@ class SimpleThingsFormSerializerExtension extends Extension
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
 
+        $processor = new Processor();
+        $config = $processor->processConfiguration(new Configuration(), $configs);
+
         $container->setAlias('form_serializer', 'simple_things_form_serializer.form_serializer');
+        $container->setAlias('simple_things_form_serializer.serializer.naming_strategy', 'simple_things_form_serializer.serializer.naming_strategy.' . $config['naming_strategy']);
+
+        $container->setParameter('simple_things_form_serializer.options.include_root_in_json', $config['include_root_in_json']);
+        $container->setParameter('simple_things_form_serializer.options.application_xml_root_name', $config['application_xml_root_name']);
     }
 }
 

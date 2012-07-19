@@ -50,6 +50,13 @@ If you want to convert JMS Serializer based configuration to FormTypes you can u
 
 Since JMS Serializer automatically builds metadata for every class, you can use this command to generate form types for any existing class for you.
 
+## Configuration
+
+    simple_things_form_serializer:
+        include_root_in_json: false
+        application_xml_root_name: ~
+        naming_strategy: camel_case
+
 ## Example
 
 Take a usual form, extended with some details about serialization:
