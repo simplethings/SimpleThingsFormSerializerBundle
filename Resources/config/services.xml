@@ -42,7 +42,7 @@
             <tag name="form.type_extension" alias="collection" />
         </service>
 
-        <service id="simple_things_form_serializer.form.extension.serializer_type" class="SimpleThings\FormSerializerBundle\Form\Extension\SerializerTypeExtension" public="false">
+        <service id="simple_things_form_serializer.form.extension.serializer_type" class="SimpleThings\FormSerializerBundle\Form\Extension\SerializerTypeExtension">
             <argument type="service" id="simple_things_form_serializer.serializer.encoder_registry" />
             <argument type="service" id="simple_things_form_serializer.serializer.options" />
             <tag name="form.type_extension" alias="form" />
