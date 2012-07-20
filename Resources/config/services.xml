@@ -38,7 +38,7 @@
         <service id="simple_things_form_serializer.serializer.naming_strategy.camel_case"
             class="SimpleThings\FormSerializerBundle\Serializer\NamingStrategy\CamelCaseStrategy" />
 
-        <service id="simple_things_form_serializer.form.extension.collection_type" class="SimpleThings\FormSerializerBundle\Form\Extension\CollectionTypeExtension" public="false">
+        <service id="simple_things_form_serializer.form.extension.collection_type" class="SimpleThings\FormSerializerBundle\Form\Extension\CollectionTypeExtension">
             <tag name="form.type_extension" alias="collection" />
         </service>
 
