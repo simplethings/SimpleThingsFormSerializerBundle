@@ -92,7 +92,7 @@ class BindRequestListener implements EventSubscriberInterface
         foreach ($form->getChildren() as $child) {
             $options     = $child->getConfig()->getOptions();
 
-            if (isset($options['read_only']) && $options['read_only']) {
+            if (isset($options['disabled']) && $options['disabled']) {
                 continue;
             }
 

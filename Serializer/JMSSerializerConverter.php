@@ -131,7 +131,7 @@ PHP;
             }
 
             if ($property->readOnly) {
-                $options[] = "'read_only' => true";
+                $options[] = "'disabled' => true";
             }
 
             $options = $options ? ", array(" . implode(", ", $options) . ")" : "";
