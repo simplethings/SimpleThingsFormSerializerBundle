@@ -58,7 +58,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
         $data = $serializer->serialize($comment, new CommentType(), "xml");
 
-        $this->assertEquals("<?xml version=\"1.0\"?>\n<user><message>Test</message></user>\n", $data);
+        $this->assertEquals("<?xml version=\"1.0\"?>\n<user><message><![CDATA[Test]]></message></user>\n", $data);
     }
 }
 
