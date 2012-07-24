@@ -15,7 +15,7 @@ namespace SimpleThings\FormSerializerBundle\Serializer;
 
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormTypeInterface;
-use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
@@ -37,7 +37,7 @@ class FormSerializer
     {
         if ($typeBuilder instanceof FormTypeInterface) {
             $form = $this->factory->create($typeBuilder, $object);
-        } else if ($typeBuilder instanceof FormBuilderInterface) {
+        } else if ($typeBuilder instanceof FormBuilder) {
             $form = $typeBuilder->getForm();
             $form->setData($object);
         } else if ($typeBuilder instanceof FormInterface) {
@@ -49,10 +49,8 @@ class FormSerializer
             throw new UnexpectedTypeException($typeBuilder, 'FormInterface|FormTypeInterface|FormBuilderInterface');
         }
 
-        $options = $form->getConfig()->getOptions();
-        $xmlName = isset($options['serialize_xml_name'])
-            ? $options['serialize_xml_name']
-            : 'entry';
+        $options = array(); //$form->getOptions();
+        $xmlName = $form->getAttribute('serialize_xml_name') ?: 'entry';
 
         if ($form->isBound() && ! $form->isValid()) {
             $data    = $this->serializeFormError($form);
@@ -84,7 +82,7 @@ class FormSerializer
         $result = array();
 
         foreach ($form->getErrors() as $error) {
-            $result['error'][] = $error->getMessage();
+            $result['error'][] = strtr($error->getMessageTemplate(), $error->getMessageParameters());
         }
 
         foreach ($form->getChildren() as $child) {
@@ -101,24 +99,31 @@ class FormSerializer
     private function serializeForm(FormInterface $form, $isXml)
     {
         if ( ! $form->hasChildren()) {
-            return $form->getViewData();
+            return $form->getClientData();
         }
 
         $data = array();
         $namingStrategy = $this->options->getNamingStrategy();
 
         foreach ($form->getChildren() as $child) {
-            $options = $child->getConfig()->getOptions();
-            $name    = $options['serialize_name'] ?: $namingStrategy->translateName($child);
+            $options = array(
+                'serialize_name' => false,
+                'serialize_xml_name' => 'entry',
+                'serialize_xml_value' => false,
+                'serialize_xml_attribute' => false,
+                'serialize_xml_inline' => true,
+                'serialize_only' => false,
+            ); //$child->getConfig()->getOptions();
+            $name = $child->getAttribute('serialize_name') ?: $namingStrategy->translateName($child);
 
             if ($isXml) {
-                $name = (!$options['serialize_xml_value'])
-                    ? ($options['serialize_xml_attribute'] ? '@' . $name : $name)
+                $name = !$child->getAttribute('serialize_xml_value')
+                    ? ($child->getAttribute('serialize_xml_attribute') ? '@' . $name : $name)
                     : '#';
             }
 
-            if ( ! $options['serialize_xml_inline']) {
-                $data[$name][$options['serialize_xml_name']] = $this->serializeForm($child, $isXml);
+            if ( ! $child->getAttribute('serialize_xml_inline')) {
+                $data[$name][$child->getAttribute('serialize_xml_name')] = $this->serializeForm($child, $isXml);
             } else {
                 $data[$name] = $this->serializeForm($child, $isXml);
             }

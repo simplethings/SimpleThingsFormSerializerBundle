@@ -7,29 +7,25 @@ use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPas
 
 use Symfony\Component\Form\Extension\Core\CoreExtension;
 use Symfony\Component\Form\FormFactory;
-use Symfony\Component\Form\FormRegistry;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormBuilder;
 
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-
-use SimpleThings\FormSerializerBundle\DependencyInjection\SimpleThingsFormSerializerExtension;
-use SimpleThings\FormSerializerBundle\Serializer\EncoderRegistry;
-use SimpleThings\FormSerializerBundle\Form\SerializerExtension;
 use SimpleThings\FormSerializerBundle\DependencyInjection\CompilerPass\EncoderPass;
+use SimpleThings\FormSerializerBundle\DependencyInjection\SimpleThingsFormSerializerExtension;
+use SimpleThings\FormSerializerBundle\Form\SerializerExtension;
+use SimpleThings\FormSerializerBundle\Serializer\EncoderRegistry;
+use SimpleThings\FormSerializerBundle\Serializer\Encoder\JsonEncoder;
+use SimpleThings\FormSerializerBundle\Serializer\Encoder\XmlEncoder;
 
 class ContainerTest extends \PHPUnit_Framework_TestCase
 {
     public function testContainer()
     {
         $registry = new EncoderRegistry(array(new XmlEncoder, new JsonEncoder));
-        $factory  = new FormFactory(new FormRegistry(array(
+        $factory  = new FormFactory(array(
             new CoreExtension(),
             new SerializerExtension($registry)
-        )));
+        ));
         $container = new ContainerBuilder(new ParameterBag(array(
             'kernel.debug'       => false,
             'kernel.bundles'     => array(),
@@ -73,19 +69,19 @@ class Comment
 
 class CommentType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilder $builder, array $options)
     {
         $builder
             ->add('message', 'text')
         ;
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function getDefaultOptions(array $options)
     {
-        $resolver->setDefaults(array(
+        return array(
             'data_class' => __NAMESPACE__ . '\\Comment',
             'serialize_xml_name'  => 'user',
-        ));
+        );
     }
 
     public function getName()

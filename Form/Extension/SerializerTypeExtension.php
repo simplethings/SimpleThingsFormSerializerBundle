@@ -14,10 +14,9 @@
 namespace SimpleThings\FormSerializerBundle\Form\Extension;
 
 use Symfony\Component\Form\AbstractTypeExtension;
-use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 
 use SimpleThings\FormSerializerBundle\Form\EventListener\BindRequestListener;
@@ -34,12 +33,20 @@ class SerializerTypeExtension extends AbstractTypeExtension
         $this->options         = $options ?: new SerializerOptions();
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilder $builder, array $options)
     {
         $builder->addEventSubscriber(new BindRequestListener($this->encoderRegistry, $this->options));
+
+        // Add the options as attributes so we have access to them later on.
+        $builder->setAttribute('serialize_name', $options['serialize_name']);
+        $builder->setAttribute('serialize_xml_name', $options['serialize_xml_name']);
+        $builder->setAttribute('serialize_xml_value', $options['serialize_xml_value']);
+        $builder->setAttribute('serialize_xml_attribute', $options['serialize_xml_attribute']);
+        $builder->setAttribute('serialize_xml_inline', $options['serialize_xml_inline']);
+        $builder->setAttribute('serialize_only', $options['serialize_only']);
     }
 
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function buildViewButtomUp(FormView $view, FormInterface $form, array $options)
     {
         foreach ($form->getChildren() as $identifier => $child) {
             if (false == $child->getConfig()->getOption('serialize_only')) {
@@ -50,21 +57,21 @@ class SerializerTypeExtension extends AbstractTypeExtension
         }
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function getDefaultOptions(array $options)
     {
-        $resolver->setDefaults(array(
+        return array(
             'serialize_name'          => false,
             'serialize_xml_name'      => 'entry',
             'serialize_xml_value'     => false,
             'serialize_xml_attribute' => false,
             'serialize_xml_inline'    => true,
             'serialize_only'          => false,
-        ));
+        );
     }
 
     public function getExtendedType()
     {
-        return 'form';
+        return 'field';
     }
 }
 

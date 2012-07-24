@@ -15,6 +15,8 @@ namespace SimpleThings\FormSerializerBundle\Serializer;
 
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
+use Symfony\Component\Form\Exception\UnexpectedTypeException;
+use SimpleThings\FormSerializerBundle\Serializer\SupportsInterface;
 
 class EncoderRegistry implements EncoderInterface, DecoderInterface
 {
@@ -22,6 +24,12 @@ class EncoderRegistry implements EncoderInterface, DecoderInterface
 
     public function __construct(array $encoders)
     {
+        foreach ($encoders as $encoder) {
+            if (false == $encoder instanceof SupportsInterface) {
+                throw new UnexpectedTypeException($encoder, 'SimpleThings\FormSerializerBundle\Serializer\SupportsInterface');
+            }
+        }
+
         $this->encoders = $encoders;
     }
 

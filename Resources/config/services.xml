@@ -14,8 +14,8 @@
             <argument type="collection" />
         </service>
 
-        <service id="simple_things_form_serializer.serializer.encoder.xml" class="Symfony\Component\Serializer\Encoder\XmlEncoder" />
-        <service id="simple_things_form_serializer.serializer.encoder.json" class="Symfony\Component\Serializer\Encoder\JsonEncoder" />
+        <service id="simple_things_form_serializer.serializer.encoder.xml" class="SimpleThings\FormSerializerBundle\Serializer\Encoder\XmlEncoder" />
+        <service id="simple_things_form_serializer.serializer.encoder.json" class="SimpleThings\FormSerializerBundle\Serializer\Encoder\JsonEncoder" />
 
         <service id="simple_things_form_serializer.serializer.options" class="SimpleThings\FormSerializerBundle\Serializer\SerializerOptions" public="false">
             <call method="setNamingStrategy">

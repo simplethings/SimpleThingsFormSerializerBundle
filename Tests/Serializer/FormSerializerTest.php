@@ -16,29 +16,28 @@ namespace SimpleThings\FormSerializerBundle\Tests\Serializer;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormRegistry;
-use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\CoreExtension;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 use SimpleThings\FormSerializerBundle\Serializer\FormSerializer;
 use SimpleThings\FormSerializerBundle\Serializer\EncoderRegistry;
 use SimpleThings\FormSerializerBundle\Form\SerializerExtension;
+use SimpleThings\FormSerializerBundle\Serializer\Encoder\XmlEncoder;
+use SimpleThings\FormSerializerBundle\Serializer\Encoder\JsonEncoder;
 
 class FormSerializerTest extends \PHPUnit_Framework_TestCase
 {
     public function testFunctional()
     {
         $registry = new EncoderRegistry(array(new XmlEncoder, new JsonEncoder));
-        $factory = new FormFactory(new FormRegistry(array(
-                        new CoreExtension(),
-                        new SerializerExtension($registry)
-                        )));
+        $factory = new FormFactory(array(
+            new CoreExtension(),
+            new SerializerExtension($registry)
+        ));
 
         $address          = new Address();
         $address->street  = "Somestreet 1";
@@ -62,7 +61,7 @@ class FormSerializerTest extends \PHPUnit_Framework_TestCase
             ->add('gender', 'choice', array('choices' => array('male' => 'Male', 'female' => 'Female')))
             ->add('interests', 'choice', array('choices' => array('sport' => 'Sports', 'reading' => 'Reading'), 'multiple' => true, 'serialize_xml_inline' => false, 'serialize_xml_name' => 'interest'))
             ->add('country', 'country', array('serialize_only' => true))
-            ->add('address', null, array('compound' => true, 'data_class' => __NAMESPACE__ . '\\Address'))
+            ->add('address', null, array('data_class' => __NAMESPACE__ . '\\Address'))
             ;
 
         $addressBuilder = $builder->get('address');
@@ -134,10 +133,10 @@ XML
     public function testSerializeCollection()
     {
         $registry = new EncoderRegistry(array(new XmlEncoder, new JsonEncoder));
-        $factory = new FormFactory(new FormRegistry(array(
-                        new CoreExtension(),
-                        new SerializerExtension($registry)
-                        )));
+        $factory = new FormFactory(array(
+            new CoreExtension(),
+            new SerializerExtension($registry)
+        ));
 
         $address          = new Address();
         $address->street  = "Somestreet 1";
@@ -191,10 +190,10 @@ XML
     public function testSerializeErrors()
     {
         $registry = new EncoderRegistry(array(new XmlEncoder, new JsonEncoder));
-        $factory = new FormFactory(new FormRegistry(array(
-                        new CoreExtension(),
-                        new SerializerExtension($registry)
-                        )));
+        $factory = new FormFactory(array(
+            new CoreExtension(),
+            new SerializerExtension($registry)
+        ));
         $user2 = new User();
         $form = $factory->create(new UserType(), $user2);
         $xml = <<<XML
@@ -253,7 +252,7 @@ class Address
 
 class UserType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilder $builder, array $options)
     {
         $builder
             ->add('username', 'text')
@@ -270,12 +269,12 @@ class UserType extends AbstractType
         ;
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function getDefaultOptions(array $options)
     {
-        $resolver->setDefaults(array(
+        return array(
             'data_class' => __NAMESPACE__ . '\\User',
             'serialize_xml_name'  => 'user',
-        ));
+        );
     }
 
     public function getName()
@@ -286,7 +285,7 @@ class UserType extends AbstractType
 
 class AddressType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilder $builder, array $options)
     {
         $builder
             ->add('street', 'text', array('serialize_xml_attribute' => true))
@@ -295,11 +294,11 @@ class AddressType extends AbstractType
         ;
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function getDefaultOptions(array $options)
     {
-        $resolver->setDefaults(array(
+        return array(
             'data_class' => __NAMESPACE__ . '\\Address',
-        ));
+        );
     }
 
     public function getName()

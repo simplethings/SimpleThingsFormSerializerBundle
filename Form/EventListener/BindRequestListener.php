@@ -14,7 +14,7 @@
 namespace SimpleThings\FormSerializerBundle\Form\EventListener;
 
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\Event\FilterDataEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
@@ -36,10 +36,10 @@ class BindRequestListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         // High priority in order to supersede other listeners
-        return array(FormEvents::PRE_BIND => array('preBind', 129));
+        return array(FormEvents::BIND_CLIENT_DATA => array('bindClientData', 129));
     }
 
-    public function preBind(FormEvent $event)
+    public function bindClientData(FilterDataEvent $event)
     {
         $form    = $event->getForm();
         $request = $event->getData();
@@ -48,14 +48,21 @@ class BindRequestListener implements EventSubscriberInterface
             return;
         }
 
-        $format = $request->getContentType();
+        $format = $request->getFormat($request->server->get('CONTENT_TYPE'));
 
         if ( ! $this->decoder->supportsDecoding($format)) {
             return;
         }
 
         $content = $request->getContent();
-        $options = $form->getConfig()->getOptions();
+        $options = array(
+            'serialize_name' => false,
+            'serialize_xml_name' => 'entry',
+            'serialize_xml_value' => false,
+            'serialize_xml_attribute' => false,
+            'serialize_xml_inline' => true,
+            'serialize_only' => false,
+        );
         $xmlName = !empty($options['serialize_xml_name']) ? $options['serialize_xml_name'] : 'entry';
         $data    = $this->decoder->decode($content, $format);
 
@@ -90,7 +97,14 @@ class BindRequestListener implements EventSubscriberInterface
         $namingStrategy = $this->options->getNamingStrategy();
 
         foreach ($form->getChildren() as $child) {
-            $options     = $child->getConfig()->getOptions();
+            $options = array(
+                'serialize_name' => $child->getAttribute('serialize_name'),
+                'serialize_xml_name' => $child->getAttribute('serialize_xml_name'),
+                'serialize_xml_value' => $child->getAttribute('serialize_xml_value'),
+                'serialize_xml_attribute' => $child->getAttribute('serialize_xml_attribute'),
+                'serialize_xml_inline' => $child->getAttribute('serialize_xml_inline'),
+                'disabled' => $child->isReadOnly(),
+            );
 
             if (isset($options['disabled']) && $options['disabled']) {
                 continue;
