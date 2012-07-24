@@ -62,17 +62,17 @@ class FormSerializerTest extends \PHPUnit_Framework_TestCase
             ->add('interests', 'choice', array('choices' => array('sport' => 'Sports', 'reading' => 'Reading'), 'multiple' => true, 'serialize_xml_inline' => false, 'serialize_xml_name' => 'interest'))
             ->add('country', 'country', array('serialize_only' => true))
             ->add('address', null, array('data_class' => __NAMESPACE__ . '\\Address'))
-            ;
+        ;
 
         $addressBuilder = $builder->get('address');
         $addressBuilder
             ->add('street', 'text', array('serialize_xml_value' => true))
             ->add('zipCode', 'text', array('serialize_xml_attribute' => true))
             ->add('city', 'text', array('serialize_xml_attribute' => true))
-            ;
+        ;
 
         $formSerializer = new FormSerializer($factory, $registry);
-        $xml           = $formSerializer->serialize($user, $builder, 'xml');
+        $xml            = $formSerializer->serialize($user, $builder, 'xml');
 
         $dom = new \DOMDocument;
         $dom->loadXml($xml);
@@ -91,7 +91,7 @@ class FormSerializerTest extends \PHPUnit_Framework_TestCase
     <interest><![CDATA[reading]]></interest>
   </interests>
   <country><![CDATA[DE]]></country>
-  <address zip_code="12345" city="Bonn">Somestreet 1</address>
+  <address zip_code="12345" city="Bonn"><![CDATA[Somestreet 1]]></address>
 </user>
 
 XML
