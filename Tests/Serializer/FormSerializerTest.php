@@ -82,15 +82,15 @@ class FormSerializerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(<<<XML
 <?xml version="1.0"?>
 <user>
-  <username>beberlei</username>
-  <email>kontakt@beberlei.de</email>
-  <birthday>1984-03-18</birthday>
-  <gender>male</gender>
+  <username><![CDATA[beberlei]]></username>
+  <email><![CDATA[kontakt@beberlei.de]]></email>
+  <birthday><![CDATA[Mar 18, 1984]]></birthday>
+  <gender><![CDATA[male]]></gender>
   <interests>
-    <interest>sport</interest>
-    <interest>reading</interest>
+    <interest><![CDATA[sport]]></interest>
+    <interest><![CDATA[reading]]></interest>
   </interests>
-  <country>DE</country>
+  <country><![CDATA[DE]]></country>
   <address zip_code="12345" city="Bonn">Somestreet 1</address>
 </user>
 
@@ -162,10 +162,10 @@ XML
         $this->assertEquals(<<<XML
 <?xml version="1.0"?>
 <user>
-  <username>beberlei</username>
-  <email>kontakt@beberlei.de</email>
-  <birthday>1984-03-18</birthday>
-  <country>DE</country>
+  <username><![CDATA[beberlei]]></username>
+  <email><![CDATA[kontakt@beberlei.de]]></email>
+  <birthday><![CDATA[Mar 18, 1984]]></birthday>
+  <country><![CDATA[DE]]></country>
   <address street="Somestreet 1" zip_code="12345" city="Bonn"/>
   <addresses>
     <address street="Somestreet 1" zip_code="12345" city="Bonn"/>
@@ -226,7 +226,7 @@ XML;
         $formSerializer = new FormSerializer($factory, $registry);
         $xml = $formSerializer->serialize(null, $form, 'xml');
 
-        $this->assertEquals("<?xml version=\"1.0\"?>\n<form><error>foo</error><error>bar</error><children><username><error>bar</error></username><email><error>bar</error></email></children></form>\n", $xml);
+        $this->assertEquals("<?xml version=\"1.0\"?>\n<form><error><![CDATA[foo]]></error><error><![CDATA[bar]]></error><children><username><error><![CDATA[bar]]></error></username><email><error><![CDATA[bar]]></error></email><birthday><error><![CDATA[This value is not valid]]></error></birthday></children></form>\n", $xml);
     }
 }
 
