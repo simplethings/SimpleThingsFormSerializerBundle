@@ -56,12 +56,7 @@ class BindRequestListener implements EventSubscriberInterface
 
         $content = $request->getContent();
         $options = array(
-            'serialize_name' => false,
-            'serialize_xml_name' => 'entry',
-            'serialize_xml_value' => false,
-            'serialize_xml_attribute' => false,
-            'serialize_xml_inline' => true,
-            'serialize_only' => false,
+            'serialize_xml_name' => $form->getAttribute('serialize_xml_name'),
         );
         $xmlName = !empty($options['serialize_xml_name']) ? $options['serialize_xml_name'] : 'entry';
         $data    = $this->decoder->decode($content, $format);

@@ -62,17 +62,17 @@ class FormSerializerTest extends \PHPUnit_Framework_TestCase
             ->add('interests', 'choice', array('choices' => array('sport' => 'Sports', 'reading' => 'Reading'), 'multiple' => true, 'serialize_xml_inline' => false, 'serialize_xml_name' => 'interest'))
             ->add('country', 'country', array('serialize_only' => true))
             ->add('address', null, array('data_class' => __NAMESPACE__ . '\\Address'))
-            ;
+        ;
 
         $addressBuilder = $builder->get('address');
         $addressBuilder
             ->add('street', 'text', array('serialize_xml_value' => true))
             ->add('zipCode', 'text', array('serialize_xml_attribute' => true))
             ->add('city', 'text', array('serialize_xml_attribute' => true))
-            ;
+        ;
 
         $formSerializer = new FormSerializer($factory, $registry);
-        $xml           = $formSerializer->serialize($user, $builder, 'xml');
+        $xml            = $formSerializer->serialize($user, $builder, 'xml');
 
         $dom = new \DOMDocument;
         $dom->loadXml($xml);
@@ -82,16 +82,16 @@ class FormSerializerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(<<<XML
 <?xml version="1.0"?>
 <user>
-  <username>beberlei</username>
-  <email>kontakt@beberlei.de</email>
-  <birthday>1984-03-18</birthday>
-  <gender>male</gender>
+  <username><![CDATA[beberlei]]></username>
+  <email><![CDATA[kontakt@beberlei.de]]></email>
+  <birthday><![CDATA[Mar 18, 1984]]></birthday>
+  <gender><![CDATA[male]]></gender>
   <interests>
-    <interest>sport</interest>
-    <interest>reading</interest>
+    <interest><![CDATA[sport]]></interest>
+    <interest><![CDATA[reading]]></interest>
   </interests>
-  <country>DE</country>
-  <address zip_code="12345" city="Bonn">Somestreet 1</address>
+  <country><![CDATA[DE]]></country>
+  <address zip_code="12345" city="Bonn"><![CDATA[Somestreet 1]]></address>
 </user>
 
 XML
@@ -162,10 +162,10 @@ XML
         $this->assertEquals(<<<XML
 <?xml version="1.0"?>
 <user>
-  <username>beberlei</username>
-  <email>kontakt@beberlei.de</email>
-  <birthday>1984-03-18</birthday>
-  <country>DE</country>
+  <username><![CDATA[beberlei]]></username>
+  <email><![CDATA[kontakt@beberlei.de]]></email>
+  <birthday><![CDATA[Mar 18, 1984]]></birthday>
+  <country><![CDATA[DE]]></country>
   <address street="Somestreet 1" zip_code="12345" city="Bonn"/>
   <addresses>
     <address street="Somestreet 1" zip_code="12345" city="Bonn"/>
@@ -226,7 +226,7 @@ XML;
         $formSerializer = new FormSerializer($factory, $registry);
         $xml = $formSerializer->serialize(null, $form, 'xml');
 
-        $this->assertEquals("<?xml version=\"1.0\"?>\n<form><error>foo</error><error>bar</error><children><username><error>bar</error></username><email><error>bar</error></email></children></form>\n", $xml);
+        $this->assertEquals("<?xml version=\"1.0\"?>\n<form><error><![CDATA[foo]]></error><error><![CDATA[bar]]></error><children><username><error><![CDATA[bar]]></error></username><email><error><![CDATA[bar]]></error></email><birthday><error><![CDATA[This value is not valid]]></error></birthday></children></form>\n", $xml);
     }
 }
 

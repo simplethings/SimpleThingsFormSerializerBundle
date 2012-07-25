@@ -49,7 +49,6 @@ class FormSerializer
             throw new UnexpectedTypeException($typeBuilder, 'FormInterface|FormTypeInterface|FormBuilderInterface');
         }
 
-        $options = array(); //$form->getOptions();
         $xmlName = $form->getAttribute('serialize_xml_name') ?: 'entry';
 
         if ($form->isBound() && ! $form->isValid()) {
@@ -106,14 +105,6 @@ class FormSerializer
         $namingStrategy = $this->options->getNamingStrategy();
 
         foreach ($form->getChildren() as $child) {
-            $options = array(
-                'serialize_name' => false,
-                'serialize_xml_name' => 'entry',
-                'serialize_xml_value' => false,
-                'serialize_xml_attribute' => false,
-                'serialize_xml_inline' => true,
-                'serialize_only' => false,
-            ); //$child->getConfig()->getOptions();
             $name = $child->getAttribute('serialize_name') ?: $namingStrategy->translateName($child);
 
             if ($isXml) {
