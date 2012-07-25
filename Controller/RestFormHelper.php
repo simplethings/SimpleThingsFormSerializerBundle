@@ -13,6 +13,11 @@
 
 namespace SimpleThings\FormSerializerBundle\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormTypeInterface;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
+
 /**
  * Form trait helper implementing Restful Controllers
  * using the Form component for serialization.
@@ -47,20 +52,19 @@ trait RestFormHelper
      */
     protected function getFormSerializer()
     {
-        return $this->container->get('form_serializer');
+        return $this->get('form_serializer');
     }
 
     /**
      * Apply a form type to a given object and check for validity of model.
      *
      * @param FormTypeInterface $type
-     * @param object $data
-     * @param array $options
-     * @param string $dataName
+     * @param object            $data
+     * @param array             $options
      *
      * @return bool
      */
-    protected function applyForm(FormTypeInterface $type, $data = null, array $options = array(), $dataName = null)
+    protected function applyForm(FormTypeInterface $type, $data = null, array $options = array())
     {
         $this->form = $this->bindForm($type, $data, $options);
 
@@ -71,39 +75,50 @@ trait RestFormHelper
      * Create and return a form (failure) response based on the HTTP Response format.
      *
      * @param FormInterface $data
-     * @param array $variables Additional data that is passed to an HTML view.
-     * @param string $dataName Alternative name for the form data variable in the view, if not the form name.
+     * @param array         $variables Additional data that is passed to an HTML view.
      *
      * @return Response
      */
-    protected function renderForm(FormInterface $form = null, array $variables = array(), $dataName = null)
+    protected function renderForm(FormInterface $form = null, array $variables = array())
     {
-        $form                 = $form ?: $this->form;
-        $dataName             = $dataName ?: $form->getName();
-        $variables['form']    = $form->createView();
-        $variables[$dataName] = $form->getData();
+        $form   = $form ?: $this->form;
+        $format = $this->getRequest()->getRequestFormat();
 
-        return $variables;
+        if ($format === "html") {
+            $variables['form'] = $form->createView();
+            $variables['data'] = $form->getData();
+
+            return $variables;
+        }
+
+        return $this->get('form_serializer')->serialize(null, $form, $format);
     }
 
     /**
      * Simplifies the flash usage inside a controller.
      *
-     * @param string $type
-     * @param string $message
      * @return FlashBagInterface
      */
     protected function flash()
     {
+        if ($this->getRequest()->getRequestFormat() !== "html") {
+            return new FlashBag; // dummy flush-bag, to keep the fluent
+        }
+
         $args = func_get_args();
+
         if (count($args) == 2) {
             $this->get('session')->getFlashBag()->add($args[0], $args[1]);
         }
+
         return $this->get('session')->getFlashBag();
     }
 
     /**
-     * Shortcut for redirecting using route.
+     * Shortcut for redirecting using route. Also if 201/204 status codes are
+     * redirected, it will display an empty response with a location header
+     * for non HTML format views, but also turn the response code into 301 if
+     * it is an HTML view.
      *
      * @param string $routeName
      * @param mixed  $parameters
@@ -114,15 +129,24 @@ trait RestFormHelper
      */
     protected function redirectRoute($routeName, $parameters = array(), $statusCode = 301, $absolute = false)
     {
-        return $this->redirect($this->generateUrl($routeName, $parameters, $absolute), $statusCode);
+        $link = $this->generateUrl($routeName, $parameters, $absolute);
+
+        if ($statusCode === 201 || $statusCode === 204) {
+            if ($this->getRequest()->getRequestFormat() !== "html") {
+                return new Response("", $statusCode, array("Location" => $link));
+            }
+            $statusCode = 301;
+        }
+
+        return $this->redirect($link, $statusCode);
     }
 
     /**
      * Bind the current request against the given FormType and return the form.
      *
      * @param FormTypeInterface $type
-     * @param mixed $data
-     * @param array $options
+     * @param mixed             $data
+     * @param array             $options
      *
      * @return FormInterace
      */
