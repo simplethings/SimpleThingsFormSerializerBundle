@@ -36,23 +36,22 @@ class JMSSerializerConverter
 namespace {{namespace}};
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\FormBuilder;
 
 class {{class}}Type extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilder $builder, array $options)
     {
         $builder
             {{build}}
         ;
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function setDefaultOptions(array $options)
     {
-        $resolver->setDefaults(array(
+        return array(
             {{defaults}}
-        ));
+        );
     }
 
     public function getName()
