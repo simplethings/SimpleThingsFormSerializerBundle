@@ -32,12 +32,11 @@ class JMSSerializerConverterTest extends \PHPUnit_Framework_TestCase
 namespace SimpleThings\FormSerializerBundle\Tests\Serializer;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\FormBuilder;
 
 class ObjectType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilder $builder, array $options)
     {
         $builder
             ->add('foo', 'text')
@@ -45,11 +44,11 @@ class ObjectType extends AbstractType
         ;
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function getDefaultOptions(array $options)
     {
-        $resolver->setDefaults(array(
+        return array(
             'data_class' => 'SimpleThings\FormSerializerBundle\Tests\Serializer\Object'
-        ));
+        );
     }
 
     public function getName()
@@ -72,12 +71,11 @@ PHP
 namespace SimpleThings\FormSerializerBundle\Tests\Serializer;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\FormBuilder;
 
 class FooType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilder $builder, array $options)
     {
         $builder
             ->add('object', new ObjectType())
@@ -86,11 +84,11 @@ class FooType extends AbstractType
         ;
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function getDefaultOptions(array $options)
     {
-        $resolver->setDefaults(array(
+        return array(
             'data_class' => 'SimpleThings\FormSerializerBundle\Tests\Serializer\Foo'
-        ));
+        );
     }
 
     public function getName()
@@ -113,23 +111,22 @@ PHP
 namespace SimpleThings\FormSerializerBundle\Tests\Serializer;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\FormBuilder;
 
 class BarType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilder $builder, array $options)
     {
         $builder
             ->add('objects', 'collection', array('type' => new ObjectType(), 'serialize_xml_inline' => false, 'serialize_xml_name' => 'object'))
         ;
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function getDefaultOptions(array $options)
     {
-        $resolver->setDefaults(array(
+        return array(
             'data_class' => 'SimpleThings\FormSerializerBundle\Tests\Serializer\Bar'
-        ));
+        );
     }
 
     public function getName()
