@@ -42,11 +42,11 @@ class SerializerTypeExtension extends AbstractTypeExtension
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
         foreach ($form->getChildren() as $identifier => $child) {
-            if (false == $child->getConfig()->getOption('serialize_only')) {
+            if (false === $child->getConfig()->getOption('serialize_only')) {
                 continue;
             }
 
-            $view->remove($identifier);
+            unset($view->children[$identifier]);
         }
     }
 

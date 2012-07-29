@@ -17,7 +17,7 @@ class SerializerTypeExtensionTest extends \Symfony\Component\Form\Tests\FormInte
     {
         $formView = $this->factory->create(new ChildType())->createView();
 
-        $this->assertFalse($formView->has('createdAt'));
+        $this->assertFalse(array_key_exists('createdAt', $formView->children));
     }
 
     public function getExtensions()
