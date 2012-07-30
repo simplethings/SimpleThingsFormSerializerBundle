@@ -19,6 +19,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FormSerializer
 {
@@ -33,9 +34,35 @@ class FormSerializer
         $this->options = $options ?: new SerializerOptions;
     }
 
+    public function serializeList($list, $type, $format, $xmlRootName = 'entries')
+    {
+        if (!($type instanceof FormTypeInterface) && !is_string($type)) {
+            throw new UnexpectedTypeException($type, 'string|FormTypeInterface');
+        }
+
+        $resolver = new OptionsResolver();
+        $type->setDefaultOptions($resolver);
+        $typeOptions = $resolver->resolve(array());
+
+        $options = array();
+        $options['type'] = $type;
+        $options['serialize_xml_inline'] = true;
+
+        $formOptions = array();
+        $formOptions['serialize_xml_name'] = $xmlRootName;
+
+        $name = isset($typeOptions['serialize_name']) ? $typeOptions['serialize_name'] : $type->getName();
+        $list = array($name => $list);
+
+        $builder = $this->factory->createBuilder('form', $list, $formOptions);
+        $builder->add($name, 'collection', $options);
+
+        return $this->serialize($list, $builder, $format);
+    }
+
     public function serialize($object, $typeBuilder, $format)
     {
-        if ($typeBuilder instanceof FormTypeInterface) {
+        if (($typeBuilder instanceof FormTypeInterface) || is_string($typeBuilder)) {
             $form = $this->factory->create($typeBuilder, $object);
         } else if ($typeBuilder instanceof FormBuilderInterface) {
             $form = $typeBuilder->getForm();

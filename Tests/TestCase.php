@@ -14,10 +14,11 @@ use Symfony\Component\Form\ResolvedFormTypeFactory;
 use SimpleThings\FormSerializerBundle\Serializer\EncoderRegistry;
 use SimpleThings\FormSerializerBundle\Form\SerializerExtension;
 use SimpleThings\FormSerializerBundle\Serializer\FormSerializer;
+use SimpleThings\FormSerializerBundle\Serializer\SerializerOptions;
 
 class TestCase extends \PHPUnit_Framework_TestCase
 {
-    public function createFormFactory()
+    public function createFormFactory(SerializerOptions $options = null)
     {
         $registry = new EncoderRegistry(array(new XmlEncoder, new JsonEncoder));
         $factory = new FormFactory(new FormRegistry(array(
@@ -27,14 +28,14 @@ class TestCase extends \PHPUnit_Framework_TestCase
         return $factory;
     }
 
-    public function createFormSerializer()
+    public function createFormSerializer(SerializerOptions $options = null)
     {
-        $registry = new EncoderRegistry(array(new XmlEncoder, new JsonEncoder));
+        $registry = new EncoderRegistry(array(new XmlEncoder, new JsonEncoder), $options);
         $factory = new FormFactory(new FormRegistry(array(
                         new CoreExtension(),
                         new SerializerExtension($registry)
                         ), new ResolvedFormTypeFactory), new ResolvedFormTypeFactory);
-        $formSerializer = new FormSerializer($factory, $registry);
+        $formSerializer = new FormSerializer($factory, $registry, $options);
         return $formSerializer;
     }
 }

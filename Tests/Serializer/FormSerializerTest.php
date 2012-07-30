@@ -60,12 +60,9 @@ class FormSerializerTest extends TestCase
             ;
 
         $formSerializer = $this->createFormSerializer();
-        $xml           = $formSerializer->serialize($user, $builder, 'xml');
 
-        $dom = new \DOMDocument;
-        $dom->loadXml($xml);
-        $dom->formatOutput = true;
-        $xml = $dom->saveXml();
+        $xml = $formSerializer->serialize($user, $builder, 'xml');
+        $xml = $this->formatXml($xml);
 
         $this->assertEquals(<<<XML
 <?xml version="1.0"?>
@@ -118,6 +115,77 @@ XML
         $this->assertEquals($user3, $user);
     }
 
+    public function testSerializeArray()
+    {
+        $address          = new Address();
+        $address->street  = "Somestreet 1";
+        $address->zipCode = 12345;
+        $address->city    = "Bonn";
+
+        $user           = new User();
+        $user->username = "beberlei";
+        $user->email    = "kontakt@beberlei.de";
+        $user->birthday = new \DateTime("1984-03-18");
+        $user->country  = "DE";
+        $user->address  = $address;
+        $user->addresses = array($address, $address);
+
+        $data = array($user, $user, $user);
+
+        $formSerializer = $this->createFormSerializer();
+
+        $xml = $formSerializer->serializeList($data, new UserType(), 'xml');
+        $xml = $this->formatXml($xml);
+
+        $this->assertEquals(<<<XML
+<?xml version="1.0"?>
+<entries>
+  <user>
+    <username>beberlei</username>
+    <email>kontakt@beberlei.de</email>
+    <birthday>1984-03-18</birthday>
+    <country>DE</country>
+    <address street="Somestreet 1" zip_code="12345" city="Bonn"/>
+    <addresses>
+      <address street="Somestreet 1" zip_code="12345" city="Bonn"/>
+      <address street="Somestreet 1" zip_code="12345" city="Bonn"/>
+    </addresses>
+  </user>
+  <user>
+    <username>beberlei</username>
+    <email>kontakt@beberlei.de</email>
+    <birthday>1984-03-18</birthday>
+    <country>DE</country>
+    <address street="Somestreet 1" zip_code="12345" city="Bonn"/>
+    <addresses>
+      <address street="Somestreet 1" zip_code="12345" city="Bonn"/>
+      <address street="Somestreet 1" zip_code="12345" city="Bonn"/>
+    </addresses>
+  </user>
+  <user>
+    <username>beberlei</username>
+    <email>kontakt@beberlei.de</email>
+    <birthday>1984-03-18</birthday>
+    <country>DE</country>
+    <address street="Somestreet 1" zip_code="12345" city="Bonn"/>
+    <addresses>
+      <address street="Somestreet 1" zip_code="12345" city="Bonn"/>
+      <address street="Somestreet 1" zip_code="12345" city="Bonn"/>
+    </addresses>
+  </user>
+</entries>
+
+XML
+            , $xml);
+
+        $json = $formSerializer->serializeList($data, new UserType(), 'json');
+
+        $this->assertEquals(<<<JSON
+{"user":[{"username":"beberlei","email":"kontakt@beberlei.de","birthday":"1984-03-18","country":"DE","address":{"street":"Somestreet 1","zip_code":"12345","city":"Bonn"},"addresses":{"address":[{"street":"Somestreet 1","zip_code":"12345","city":"Bonn"},{"street":"Somestreet 1","zip_code":"12345","city":"Bonn"}]}},{"username":"beberlei","email":"kontakt@beberlei.de","birthday":"1984-03-18","country":"DE","address":{"street":"Somestreet 1","zip_code":"12345","city":"Bonn"},"addresses":{"address":[{"street":"Somestreet 1","zip_code":"12345","city":"Bonn"},{"street":"Somestreet 1","zip_code":"12345","city":"Bonn"}]}},{"username":"beberlei","email":"kontakt@beberlei.de","birthday":"1984-03-18","country":"DE","address":{"street":"Somestreet 1","zip_code":"12345","city":"Bonn"},"addresses":{"address":[{"street":"Somestreet 1","zip_code":"12345","city":"Bonn"},{"street":"Somestreet 1","zip_code":"12345","city":"Bonn"}]}}]}
+JSON
+            , $json);
+    }
+
     public function testSerializeCollection()
     {
         $factory = $this->createFormFactory();
@@ -136,12 +204,9 @@ XML
         $user->addresses = array($address, $address);
 
         $formSerializer = $this->createFormSerializer();
-        $xml           = $formSerializer->serialize($user, $type = new UserType(), 'xml');
 
-        $dom = new \DOMDocument;
-        $dom->loadXml($xml);
-        $dom->formatOutput = true;
-        $xml = $dom->saveXml();
+        $xml = $formSerializer->serialize($user, $type = new UserType(), 'xml');
+        $xml = $this->formatXml($xml);
 
         $this->assertEquals(<<<XML
 <?xml version="1.0"?>
@@ -209,6 +274,15 @@ XML;
 
         $this->assertEquals("<?xml version=\"1.0\"?>\n<form><error>foo</error><error>bar</error><children><username><error>bar</error></username><email><error>bar</error></email></children></form>\n", $xml);
     }
+
+    private function formatXml($xml)
+    {
+        $dom = new \DOMDocument;
+        $dom->loadXml($xml);
+        $dom->formatOutput = true;
+
+        return $dom->saveXml();
+    }
 }
 
 class User
@@ -242,10 +316,10 @@ class UserType extends AbstractType
             ->add('country', 'country')
             ->add('address', new AddressType())
             ->add('addresses', 'collection', array(
-                'type'               => new AddressType(),
-                'allow_add'          => true,
-                'serialize_xml_inline'   => false,
-                'serialize_xml_name' => 'address'
+                'type'                 => new AddressType(),
+                'allow_add'            => true,
+                'serialize_xml_inline' => false,
+                'serialize_xml_name'   => 'address'
             ))
         ;
     }
@@ -253,8 +327,8 @@ class UserType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => __NAMESPACE__ . '\\User',
-            'serialize_xml_name'  => 'user',
+            'data_class'         => __NAMESPACE__ . '\\User',
+            'serialize_xml_name' => 'user',
         ));
     }
 
