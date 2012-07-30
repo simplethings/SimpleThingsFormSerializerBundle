@@ -28,29 +28,16 @@ class FormType
      */
     private $type;
 
-    /**
-     * @var string
-     */
-    private $group = 'default';
-
     public function __construct(array $values)
     {
         if (isset($values['value'])) {
             $this->type = $values['value'];
-        }
-        if (isset($values['group'])) {
-            $this->group = $values['group'];
         }
     }
 
     public function getType()
     {
         return $this->type;
-    }
-
-    public function getGroup()
-    {
-        return $this->group;
     }
 }
 

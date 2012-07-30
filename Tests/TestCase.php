@@ -59,7 +59,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
         return $formSerializer;
     }
 
-    public function createJmsSerializer()
+    public function createJmsSerializer($forms = false)
     {
         $namingStrategy    = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
         $objectConstructor = new UnserializeObjectConstructor();
@@ -83,19 +83,26 @@ class TestCase extends \PHPUnit_Framework_TestCase
             'xml'  => new XmlDeserializationVisitor($namingStrategy, $customDeserializationHandlers, $objectConstructor),
         );
 
-        $factory = $this->createJmsMetadataFactory();
+        $factory = $this->createJmsMetadataFactory($forms);
         return new JMSSerializer($factory, $serializationVisitors, $deserializationVisitors);
     }
 
-    public function createJmsMetadataFactory()
+    public function createJmsMetadataFactory($forms = false)
     {
         $fileLocator = new \Metadata\Driver\FileLocator(array());
-        $driver      = new \Metadata\Driver\DriverChain(array(
-            new \JMS\SerializerBundle\Metadata\Driver\YamlDriver($fileLocator),
-            new \JMS\SerializerBundle\Metadata\Driver\XmlDriver($fileLocator),
-            new \JMS\SerializerBundle\Metadata\Driver\PhpDriver($fileLocator),
-            new \JMS\SerializerBundle\Metadata\Driver\AnnotationDriver(new \Doctrine\Common\Annotations\AnnotationReader())
-        ));
+        if ($forms) {
+            $driver = new \SimpleThings\FormSerializerBundle\Serializer\JMS\FormMetadataDriver(
+                new \Doctrine\Common\Annotations\AnnotationReader(),
+                $this->createFormFactory()
+            );
+        } else {
+            $driver      = new \Metadata\Driver\DriverChain(array(
+                new \JMS\SerializerBundle\Metadata\Driver\YamlDriver($fileLocator),
+                new \JMS\SerializerBundle\Metadata\Driver\XmlDriver($fileLocator),
+                new \JMS\SerializerBundle\Metadata\Driver\PhpDriver($fileLocator),
+                new \JMS\SerializerBundle\Metadata\Driver\AnnotationDriver(new \Doctrine\Common\Annotations\AnnotationReader())
+            ));
+        }
         return new MetadataFactory($driver);
     }
 

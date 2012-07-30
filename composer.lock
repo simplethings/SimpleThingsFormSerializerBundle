@@ -14,8 +14,8 @@
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "cbd03ec4c66567cf2bf4ea9e0e3315a522b4eeb3",
-            "commit-date": "1343635713"
+            "source-reference": "a172a812960d060cd5dd13e4dcf3b2bc4043a18f",
+            "commit-date": "1343639879"
         },
         {
             "package": "twig/twig",
