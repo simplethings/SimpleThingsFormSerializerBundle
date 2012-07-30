@@ -175,7 +175,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
                     }
                 default:
                     $new_json .= $char;
-                    break;                   
+                    break;
             }
         }
 
