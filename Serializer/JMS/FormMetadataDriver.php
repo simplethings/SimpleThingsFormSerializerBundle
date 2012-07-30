@@ -49,7 +49,7 @@ class FormMetadataDriver implements DriverInterface
                     $propertyMetadata = new PropertyMetadata($name, $property->getName());
                     #$propertyMetadata->setAccessor('public_method', null, null);
 
-                    if ( !empty($childOptions['serialize_name'])) {
+                    if (!empty($childOptions['serialize_name'])) {
                         $propertyMetadata->serializedName = $childOptions['serialize_name'];
                     }
 
@@ -82,7 +82,6 @@ class FormMetadataDriver implements DriverInterface
                         $propertyMetadata->readOnly = true;
                     }
 
-                    #var_dump($propertyMetadata);
                     $classMetadata->addPropertyMetadata($propertyMetadata);
                 }
             }
@@ -105,9 +104,11 @@ class FormMetadataDriver implements DriverInterface
             case 'birthday';
                 return 'DateTime';
             case 'number':
-                return 'float';
+                return 'double';
             case 'checkbox':
                 return 'boolean';
+            case 'integer';
+                return 'integer';
             default:
                 return 'string';
         }
