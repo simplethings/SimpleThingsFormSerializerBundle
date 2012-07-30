@@ -64,10 +64,10 @@ class BindRequestListener implements EventSubscriberInterface
             $data = isset($data[$xmlName]) ? $data[$xmlName] : array();
         }
 
-        $event->setData($this->unserializeForm($data, $form));
+        $event->setData($this->unserializeForm($data, $form, $format == "xml"));
     }
 
-    private function unserializeForm($data, $form)
+    private function unserializeForm($data, $form, $isXml)
     {
         if ($form->hasAttribute('serialize_collection_form')) {
             $form   = $form->getAttribute('serialize_collection_form');
@@ -78,7 +78,7 @@ class BindRequestListener implements EventSubscriberInterface
             }
 
             foreach ($data as $key => $child) {
-                $result[$key] = $this->unserializeForm($child, $form);
+                $result[$key] = $this->unserializeForm($child, $form, $isXml);
             }
 
             return $result;
@@ -101,7 +101,7 @@ class BindRequestListener implements EventSubscriberInterface
 
             if ($options['serialize_xml_value'] && isset($data['#'])) {
                 $value = $data['#'];
-            } else if (! $options['serialize_xml_inline']) {
+            } else if (! $options['serialize_xml_inline'] && $isXml) {
                 $value = isset($data[$name][$options['serialize_xml_name']])
                     ? $data[$name][$options['serialize_xml_name']]
                     : null;
@@ -111,7 +111,7 @@ class BindRequestListener implements EventSubscriberInterface
                     : (isset($data[$name]) ? $data[$name] : null);
             }
 
-            $result[$child->getName()] = $this->unserializeForm($value, $child);
+            $result[$child->getName()] = $this->unserializeForm($value, $child, $isXml);
         }
 
         return $result;

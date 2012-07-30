@@ -150,7 +150,7 @@ class FormSerializer implements FormSerializerInterface
                     : '#';
             }
 
-            if ( ! $options['serialize_xml_inline']) {
+            if ( ! $options['serialize_xml_inline'] && $isXml) {
                 $data[$name][$options['serialize_xml_name']] = $this->serializeForm($child, $isXml);
             } else {
                 $data[$name] = $this->serializeForm($child, $isXml);

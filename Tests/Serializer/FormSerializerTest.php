@@ -83,14 +83,26 @@ XML
             , $xml);
 
         $json = $formSerializer->serialize($user, $builder, 'json');
-        /*
-           {
-           "username":"beberlei",
-           "email":"kontakt@beberlei.de",
-           "birthday":"1984-03-18",
-           "country":"DE",
-           "address":{"street":"Somestreet 1","zip_code":"12345","city":"Bonn"}
-           }*/
+
+        $this->assertEquals(<<<JSON
+{
+  "username": "beberlei",
+  "email": "kontakt@beberlei.de",
+  "birthday": "1984-03-18",
+  "gender": "male",
+  "interests": [
+    "sport",
+    "reading"
+  ],
+  "country": "DE",
+  "address": {
+    "street": "Somestreet 1",
+    "zip_code": "12345",
+    "city": "Bonn"
+  }
+}
+JSON
+            , $this->formatJson($json));
 
         $user2 = new User;
         $form = $builder->getForm();
@@ -181,9 +193,81 @@ XML
         $json = $formSerializer->serializeList($data, new UserType(), 'json');
 
         $this->assertEquals(<<<JSON
-{"user":[{"username":"beberlei","email":"kontakt@beberlei.de","birthday":"1984-03-18","country":"DE","address":{"street":"Somestreet 1","zip_code":"12345","city":"Bonn"},"addresses":{"address":[{"street":"Somestreet 1","zip_code":"12345","city":"Bonn"},{"street":"Somestreet 1","zip_code":"12345","city":"Bonn"}]}},{"username":"beberlei","email":"kontakt@beberlei.de","birthday":"1984-03-18","country":"DE","address":{"street":"Somestreet 1","zip_code":"12345","city":"Bonn"},"addresses":{"address":[{"street":"Somestreet 1","zip_code":"12345","city":"Bonn"},{"street":"Somestreet 1","zip_code":"12345","city":"Bonn"}]}},{"username":"beberlei","email":"kontakt@beberlei.de","birthday":"1984-03-18","country":"DE","address":{"street":"Somestreet 1","zip_code":"12345","city":"Bonn"},"addresses":{"address":[{"street":"Somestreet 1","zip_code":"12345","city":"Bonn"},{"street":"Somestreet 1","zip_code":"12345","city":"Bonn"}]}}]}
+{
+  "user": [
+    {
+      "username": "beberlei",
+      "email": "kontakt@beberlei.de",
+      "birthday": "1984-03-18",
+      "country": "DE",
+      "address": {
+        "street": "Somestreet 1",
+        "zip_code": "12345",
+        "city": "Bonn"
+      },
+      "addresses": [
+        {
+          "street": "Somestreet 1",
+          "zip_code": "12345",
+          "city": "Bonn"
+        },
+        {
+          "street": "Somestreet 1",
+          "zip_code": "12345",
+          "city": "Bonn"
+        }
+      ]
+    },
+    {
+      "username": "beberlei",
+      "email": "kontakt@beberlei.de",
+      "birthday": "1984-03-18",
+      "country": "DE",
+      "address": {
+        "street": "Somestreet 1",
+        "zip_code": "12345",
+        "city": "Bonn"
+      },
+      "addresses": [
+        {
+          "street": "Somestreet 1",
+          "zip_code": "12345",
+          "city": "Bonn"
+        },
+        {
+          "street": "Somestreet 1",
+          "zip_code": "12345",
+          "city": "Bonn"
+        }
+      ]
+    },
+    {
+      "username": "beberlei",
+      "email": "kontakt@beberlei.de",
+      "birthday": "1984-03-18",
+      "country": "DE",
+      "address": {
+        "street": "Somestreet 1",
+        "zip_code": "12345",
+        "city": "Bonn"
+      },
+      "addresses": [
+        {
+          "street": "Somestreet 1",
+          "zip_code": "12345",
+          "city": "Bonn"
+        },
+        {
+          "street": "Somestreet 1",
+          "zip_code": "12345",
+          "city": "Bonn"
+        }
+      ]
+    }
+  ]
+}
 JSON
-            , $json);
+            , $this->formatJson($json));
     }
 
     public function testSerializeCollection()
