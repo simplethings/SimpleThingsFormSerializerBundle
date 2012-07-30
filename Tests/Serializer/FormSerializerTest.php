@@ -14,12 +14,13 @@
 namespace SimpleThings\FormSerializerBundle\Tests\Serializer;
 
 use Symfony\Component\Form\FormError;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 use SimpleThings\FormSerializerBundle\Tests\TestCase;
+use SimpleThings\FormSerializerBundle\Tests\Serializer\Fixture\User;
+use SimpleThings\FormSerializerBundle\Tests\Serializer\Fixture\Address;
+use SimpleThings\FormSerializerBundle\Tests\Serializer\Fixture\UserType;
+use SimpleThings\FormSerializerBundle\Tests\Serializer\Fixture\AddressType;
 
 class FormSerializerTest extends TestCase
 {
@@ -41,7 +42,7 @@ class FormSerializerTest extends TestCase
         $user->country   = "DE";
         $user->address   = $address;
 
-        $builder = $factory->createBuilder('form', null, array('data_class' => __NAMESPACE__ . '\\User', 'serialize_xml_name' => 'user'));
+        $builder = $factory->createBuilder('form', null, array('data_class' => __NAMESPACE__ . '\\Fixture\\User', 'serialize_xml_name' => 'user'));
         $builder
             ->add('username', 'text')
             ->add('email', 'email')
@@ -49,7 +50,7 @@ class FormSerializerTest extends TestCase
             ->add('gender', 'choice', array('choices' => array('male' => 'Male', 'female' => 'Female')))
             ->add('interests', 'choice', array('choices' => array('sport' => 'Sports', 'reading' => 'Reading'), 'multiple' => true, 'serialize_xml_inline' => false, 'serialize_xml_name' => 'interest'))
             ->add('country', 'country', array('serialize_only' => true))
-            ->add('address', null, array('compound' => true, 'data_class' => __NAMESPACE__ . '\\Address'))
+            ->add('address', null, array('compound' => true, 'data_class' => __NAMESPACE__ . '\\Fixture\\Address'))
             ;
 
         $addressBuilder = $builder->get('address');
@@ -369,79 +370,3 @@ XML;
     }
 }
 
-class User
-{
-    public $username;
-    public $email;
-    public $country;
-    public $gender;
-    public $interests;
-    public $birthday;
-    public $addresses;
-    public $created;
-    public $address;
-}
-
-class Address
-{
-    public $street;
-    public $zipCode;
-    public $city;
-}
-
-class UserType extends AbstractType
-{
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder
-            ->add('username', 'text')
-            ->add('email', 'email')
-            ->add('birthday', 'date', array('widget' => 'single_text'))
-            ->add('country', 'country')
-            ->add('address', new AddressType())
-            ->add('addresses', 'collection', array(
-                'type'                 => new AddressType(),
-                'allow_add'            => true,
-                'serialize_xml_inline' => false,
-                'serialize_xml_name'   => 'address'
-            ))
-        ;
-    }
-
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(array(
-            'data_class'         => __NAMESPACE__ . '\\User',
-            'serialize_xml_name' => 'user',
-        ));
-    }
-
-    public function getName()
-    {
-        return 'user';
-    }
-}
-
-class AddressType extends AbstractType
-{
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder
-            ->add('street', 'text', array('serialize_xml_attribute' => true))
-            ->add('zipCode', 'text', array('serialize_xml_attribute' => true))
-            ->add('city', 'text', array('serialize_xml_attribute' => true))
-        ;
-    }
-
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(array(
-            'data_class' => __NAMESPACE__ . '\\Address',
-        ));
-    }
-
-    public function getName()
-    {
-        return 'address';
-    }
-}
