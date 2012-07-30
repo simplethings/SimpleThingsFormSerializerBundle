@@ -20,7 +20,8 @@ class JmsFormMetadataDriverTest extends TestCase
         $reflClass = new \ReflectionClass('SimpleThings\FormSerializerBundle\Tests\Serializer\Fixture\User');
         $metadata  = $driver->loadMetadataForClass($reflClass);
 
-        var_dump($metadata);
+        $this->assertInstanceOf('JMS\SerializerBundle\Metadata\ClassMetadata', $metadata);
+        $this->assertEquals(array('username', 'email', 'birthday', 'country', 'address', 'addresses'), array_keys($metadata->propertyMetadata));
     }
 
     public function testSerialize()
@@ -40,10 +41,33 @@ class JmsFormMetadataDriverTest extends TestCase
         $user->interests = array('sport', 'reading');
         $user->country   = "DE";
         $user->address   = $address;
+        $user->addresses = array($address, $address);
 
         $xml = $serializer->serialize($user, 'xml');
 
-        var_dump($xml);
+        $this->assertEquals(<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<user>
+  <username><![CDATA[beberlei]]></username>
+  <email><![CDATA[kontakt@beberlei.de]]></email>
+  <birthday>1984-03-18T00:00:00+0100</birthday>
+  <country><![CDATA[DE]]></country>
+  <address street="Somestreet 1" zip_code="12345" city="Bonn"/>
+  <addresses>
+    <address street="Somestreet 1" zip_code="12345" city="Bonn"/>
+    <address street="Somestreet 1" zip_code="12345" city="Bonn"/>
+  </addresses>
+</user>
+
+XML
+            , $xml);
+
+        $json = $serializer->serialize($user, 'json');
+
+        $this->assertEquals(<<<JSON
+{"username":"beberlei","email":"kontakt@beberlei.de","birthday":"1984-03-18T00:00:00+0100","country":"DE","address":{"street":"Somestreet 1","zip_code":12345,"city":"Bonn"},"addresses":[{"street":"Somestreet 1","zip_code":12345,"city":"Bonn"},{"street":"Somestreet 1","zip_code":12345,"city":"Bonn"}]}
+JSON
+            , $json);
     }
 }
 
