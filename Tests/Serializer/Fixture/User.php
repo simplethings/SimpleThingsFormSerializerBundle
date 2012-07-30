@@ -2,6 +2,11 @@
 
 namespace SimpleThings\FormSerializerBundle\Tests\Serializer\Fixture;
 
+use JMS\SerializerBundle\Annotation as JMS;
+
+/**
+ * @JMS\ExclusionPolicy("none")
+ */
 class User
 {
     public $username;

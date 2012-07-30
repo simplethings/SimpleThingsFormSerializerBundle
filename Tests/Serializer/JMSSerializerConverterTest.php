@@ -2,24 +2,18 @@
 
 namespace SimpleThings\FormSerializerBundle\Tests\Serializer;
 
+use SimpleThings\FormSerializerBundle\Tests\TestCase;
 use SimpleThings\FormSerializerBundle\Serializer\JMSSerializerConverter;
+
 use JMS\SerializerBundle\Annotation as XML;
 
-class JMSSerializerConverterTest extends \PHPUnit_Framework_TestCase
+class JMSSerializerConverterTest extends TestCase
 {
     private $converter;
 
     public function setUp()
     {
-        $fileLocator = new \Metadata\Driver\FileLocator(array());
-        $driver      = new \Metadata\Driver\DriverChain(array(
-            new \JMS\SerializerBundle\Metadata\Driver\YamlDriver($fileLocator),
-            new \JMS\SerializerBundle\Metadata\Driver\XmlDriver($fileLocator),
-            new \JMS\SerializerBundle\Metadata\Driver\PhpDriver($fileLocator),
-            new \JMS\SerializerBundle\Metadata\Driver\AnnotationDriver(new \Doctrine\Common\Annotations\AnnotationReader())
-        ));
-
-        $this->converter = new JMSSerializerConverter(new \Metadata\MetadataFactory($driver));
+        $this->converter = new JMSSerializerConverter($this->createJmsMetadataFactory());
     }
 
     public function testConverter()

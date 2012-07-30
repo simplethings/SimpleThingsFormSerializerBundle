@@ -359,14 +359,5 @@ XML;
 
         $this->assertEquals("<?xml version=\"1.0\"?>\n<form><error>foo</error><error>bar</error><children><username><error>bar</error></username><email><error>bar</error></email></children></form>\n", $xml);
     }
-
-    private function formatXml($xml)
-    {
-        $dom = new \DOMDocument;
-        $dom->loadXml($xml);
-        $dom->formatOutput = true;
-
-        return $dom->saveXml();
-    }
 }
 
