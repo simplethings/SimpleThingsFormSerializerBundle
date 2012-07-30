@@ -4,7 +4,7 @@ Bundle that helps solving the Serializer/Form component API missmatch. This miss
 code in controllers, bloating every application by reimplementing everything over
 and over again. Currently its nearly impossible to re-use REST-API calls and HTML/Form-based submits
 in the same controller action. Additionally all the current serializer components share a
-common flaw: They cannot deserialize (update) into existing object graphs. Updating 
+common flaw: They cannot deserialize (update) into existing object graphs. Updating
 object graphs is a problem the Form component already solves (perfectly!).
 
 This bundle solves these issues by hooking into the Form Framework. It allows to implement serializers for objects, using form types. For deserializing
@@ -23,7 +23,7 @@ Using this bundle you gain new form type options. The "form" field is overwritte
 - `serialize_xml_attribute` - If true, this field will be rendered as attribute on the parent in xml, not as an element. (Default: false)
 - `serialize_xml_inline` - If true, no collection wrapper element will be rendered for a collection of elements. If false, wrap all elements. (Default: true)
 - `serialize_name` - Custom name of the element in serialized form if it should deviate from the default naming strategy of turning camel-case into underscore. (Default: false)
-- `serialize_only` - If true the field will be removed from `FormView` and therefor only be present in the serialized data (json, xml) 
+- `serialize_only` - If true the field will be removed from `FormView` and therefor only be present in the serialized data (json, xml)
 
 ## Usage
 
@@ -41,8 +41,37 @@ This bundle defines a new service to serialize forms inside the Symfony DIC:
         }
     }
 
-It also registers a Listener inside the form framework that binds XML and JSON requests
-onto a form. Just call `$form->bind($request)` as shown in the example.
+The API for the FormListener is documented on the `FormSerializerInterface` it implements:
+
+    interface FormSerializerInterface
+    {
+        /**
+         * Serialize a list of objects, where each element is serialized based on a
+         * form type.
+         *
+         * @param array|Traversable $list
+         * @param FormTypeInterface $type
+         * @param string $format
+         * @param string $xmlRootName
+         *
+         * @return string
+         */
+        public function serializeList($list, $type, $format, $xmlRootName = 'entries');
+
+        /**
+         * Serialize an object based on a form type, form builder or form instance.
+         *
+         * @param mixed $object
+         * @param FormTypeInterface|FormBuilderInterface|FormInterface $typeBuilder
+         * @param string $format
+         *
+         * @return string
+         */
+        public function serialize($object, $typeBuilder, $format);
+    }
+
+The bundle also registers a Listener inside the form framework that binds XML and JSON requests
+onto a form. Just call `$form->bind($request)` as shown in the example below.
 
 If you want to convert JMS Serializer based configuration to FormTypes you can use the command that is included:
 
@@ -140,16 +169,15 @@ Deserializing will look familiar:
 
     class UserController extends Controller
     {
+        /**
+         * @Method("POST")
+         */
         public function editAction(Request $request)
         {
             $em = $this->get('doctrine.orm.default_entity_manager');
 
             $user = $em->find('Acme\DemoBundle\Entity\User', $request->get('id'));
             $form = $this->createForm(new UserType(), $user);
-
-            if ($request->getMethod() !== 'POST') {
-                return $this->renderFormFailure("MyBundle:User:edit.html.twig", $form, array('user' => $user));
-            }
 
             $form->bind($request);
 
