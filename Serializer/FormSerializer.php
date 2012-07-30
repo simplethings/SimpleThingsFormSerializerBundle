@@ -21,6 +21,9 @@ use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Serializes object graphs based on form types.
+ */
 class FormSerializer
 {
     private $factory;
@@ -34,6 +37,17 @@ class FormSerializer
         $this->options = $options ?: new SerializerOptions;
     }
 
+    /**
+     * Serialize a list of objects, where each element is serialized based on a
+     * form type.
+     *
+     * @param array|Traversable $list
+     * @param FormTypeInterface $type
+     * @param string $format
+     * @param string $xmlRootName
+     *
+     * @return string
+     */
     public function serializeList($list, $type, $format, $xmlRootName = 'entries')
     {
         if (!($type instanceof FormTypeInterface) && !is_string($type)) {
@@ -60,6 +74,15 @@ class FormSerializer
         return $this->serialize($list, $builder, $format);
     }
 
+    /**
+     * Serialize an object based on a form type, form builder or form instance.
+     *
+     * @param mixed $object
+     * @param FormTypeInterface|FormBuilderInterface|FormInterface $typeBuilder
+     * @param string $format
+     *
+     * @return string
+     */
     public function serialize($object, $typeBuilder, $format)
     {
         if (($typeBuilder instanceof FormTypeInterface) || is_string($typeBuilder)) {
