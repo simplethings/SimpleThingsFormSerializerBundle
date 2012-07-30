@@ -71,8 +71,8 @@ class FormSerializer implements FormSerializerInterface
         if (($typeBuilder instanceof FormTypeInterface) || is_string($typeBuilder)) {
             $form = $this->factory->create($typeBuilder, $object);
         } else if ($typeBuilder instanceof FormBuilderInterface) {
+            $typeBuilder->setData($object);
             $form = $typeBuilder->getForm();
-            $form->setData($object);
         } else if ($typeBuilder instanceof FormInterface) {
             $form = $typeBuilder;
             if ( ! $form->isBound()) {
