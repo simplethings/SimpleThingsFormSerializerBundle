@@ -91,7 +91,25 @@ trait RestFormHelper
             return $variables;
         }
 
-        return $this->get('form_serializer')->serialize(null, $form, $format);
+        $statusCode = 200;
+        if ( ! $form->isValid()) {
+            $statusCode = 412;
+        }
+
+        switch ($format) {
+            case 'xml':
+                $contentType = 'text/xml';
+                break;
+            case 'json':
+                $contentType = 'application/json';
+                break;
+        }
+
+        return new Response(
+            $this->get('form_serializer')->serialize(null, $form, $format),
+            $statusCode,
+            array('Content-Type' => $contentType)
+        );
     }
 
     /**
