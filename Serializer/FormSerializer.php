@@ -51,7 +51,7 @@ class FormSerializer
         $formOptions = array();
         $formOptions['serialize_xml_name'] = $xmlRootName;
 
-        $name = isset($typeOptions['serialize_name']) ? $typeOptions['serialize_name'] : $type->getName();
+        $name = isset($typeOptions['serialize_xml_name']) ? $typeOptions['serialize_xml_name'] : $type->getName();
         $list = array($name => $list);
 
         $builder = $this->factory->createBuilder('form', $list, $formOptions);

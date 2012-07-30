@@ -134,12 +134,12 @@ XML
 
         $formSerializer = $this->createFormSerializer();
 
-        $xml = $formSerializer->serializeList($data, new UserType(), 'xml');
+        $xml = $formSerializer->serializeList($data, new UserType(), 'xml', 'users');
         $xml = $this->formatXml($xml);
 
         $this->assertEquals(<<<XML
 <?xml version="1.0"?>
-<entries>
+<users>
   <user>
     <username>beberlei</username>
     <email>kontakt@beberlei.de</email>
@@ -173,7 +173,7 @@ XML
       <address street="Somestreet 1" zip_code="12345" city="Bonn"/>
     </addresses>
   </user>
-</entries>
+</users>
 
 XML
             , $xml);
