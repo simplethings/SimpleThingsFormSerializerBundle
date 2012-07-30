@@ -37,16 +37,21 @@ class PerformanceTest extends TestCase
 
         $start = microtime(true);
         $xml = $formSerializer->serializeList($list, new UserType(), 'xml', 'users');
-        echo number_format(microtime(true) - $start, 4) . "\n";
+        echo "Form Serializer: " . number_format(microtime(true) - $start, 4) . "\n";
 
         #echo $this->formatXml($xml);
 
         $jmsSerializer = $this->createJmsSerializer();
         $start = microtime(true);
         $xml = $jmsSerializer->serialize($list, 'xml');
-        echo number_format(microtime(true) - $start, 4) . "\n";
+        echo "JMS Annotations: " . number_format(microtime(true) - $start, 4) . "\n";
 
         #echo $this->formatXml($xml);
+
+        $jmsSerializer = $this->createJmsSerializer(true);
+        $start = microtime(true);
+        $xml = $jmsSerializer->serialize($list, 'xml');
+        echo "JMS with Form Metadata: " . number_format(microtime(true) - $start, 4) . "\n";
     }
 }
 
