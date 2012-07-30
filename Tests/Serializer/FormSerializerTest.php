@@ -13,32 +13,19 @@
 
 namespace SimpleThings\FormSerializerBundle\Tests\Serializer;
 
-use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormError;
-use Symfony\Component\Form\FormRegistry;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\CoreExtension;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-use SimpleThings\FormSerializerBundle\Serializer\FormSerializer;
-use SimpleThings\FormSerializerBundle\Serializer\EncoderRegistry;
-use SimpleThings\FormSerializerBundle\Form\SerializerExtension;
+use SimpleThings\FormSerializerBundle\Tests\TestCase;
 
-class FormSerializerTest extends \PHPUnit_Framework_TestCase
+class FormSerializerTest extends TestCase
 {
     public function testFunctional()
     {
-        $registry = new EncoderRegistry(array(new XmlEncoder, new JsonEncoder));
-        $factory = new FormFactory(new FormRegistry(array(
-                        new CoreExtension(),
-                        new SerializerExtension($registry)
-                        )));
+        $factory = $this->createFormFactory();
 
         $address          = new Address();
         $address->street  = "Somestreet 1";
@@ -72,7 +59,7 @@ class FormSerializerTest extends \PHPUnit_Framework_TestCase
             ->add('city', 'text', array('serialize_xml_attribute' => true))
             ;
 
-        $formSerializer = new FormSerializer($factory, $registry);
+        $formSerializer = $this->createFormSerializer();
         $xml           = $formSerializer->serialize($user, $builder, 'xml');
 
         $dom = new \DOMDocument;
@@ -133,11 +120,7 @@ XML
 
     public function testSerializeCollection()
     {
-        $registry = new EncoderRegistry(array(new XmlEncoder, new JsonEncoder));
-        $factory = new FormFactory(new FormRegistry(array(
-                        new CoreExtension(),
-                        new SerializerExtension($registry)
-                        )));
+        $factory = $this->createFormFactory();
 
         $address          = new Address();
         $address->street  = "Somestreet 1";
@@ -152,7 +135,7 @@ XML
         $user->address  = $address;
         $user->addresses = array($address, $address);
 
-        $formSerializer = new FormSerializer($factory, $registry);
+        $formSerializer = $this->createFormSerializer();
         $xml           = $formSerializer->serialize($user, $type = new UserType(), 'xml');
 
         $dom = new \DOMDocument;
@@ -190,11 +173,8 @@ XML
 
     public function testSerializeErrors()
     {
-        $registry = new EncoderRegistry(array(new XmlEncoder, new JsonEncoder));
-        $factory = new FormFactory(new FormRegistry(array(
-                        new CoreExtension(),
-                        new SerializerExtension($registry)
-                        )));
+        $factory = $this->createFormFactory();
+
         $user2 = new User();
         $form = $factory->create(new UserType(), $user2);
         $xml = <<<XML
@@ -224,7 +204,7 @@ XML;
         $form->get('username')->addError(new FormError("bar"));
         $form->get('email')->addError(new FormError("bar"));
 
-        $formSerializer = new FormSerializer($factory, $registry);
+        $formSerializer = $this->createFormSerializer();
         $xml = $formSerializer->serialize(null, $form, 'xml');
 
         $this->assertEquals("<?xml version=\"1.0\"?>\n<form><error>foo</error><error>bar</error><children><username><error>bar</error></username><email><error>bar</error></email></children></form>\n", $xml);
