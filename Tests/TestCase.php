@@ -9,6 +9,7 @@ use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Form\Extension\Core\CoreExtension;
+use Symfony\Component\Form\ResolvedFormTypeFactory;
 
 use SimpleThings\FormSerializerBundle\Serializer\EncoderRegistry;
 use SimpleThings\FormSerializerBundle\Form\SerializerExtension;
@@ -22,7 +23,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $factory = new FormFactory(new FormRegistry(array(
                         new CoreExtension(),
                         new SerializerExtension($registry)
-                        )));
+                        ), new ResolvedFormTypeFactory), new ResolvedFormTypeFactory);
         return $factory;
     }
 
@@ -32,7 +33,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $factory = new FormFactory(new FormRegistry(array(
                         new CoreExtension(),
                         new SerializerExtension($registry)
-                        )));
+                        ), new ResolvedFormTypeFactory), new ResolvedFormTypeFactory);
         $formSerializer = new FormSerializer($factory, $registry);
         return $formSerializer;
     }

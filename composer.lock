@@ -3,7 +3,7 @@
     "packages": [
         {
             "package": "doctrine/common",
-            "version": "2.3.0-BETA1"
+            "version": "2.3.0-RC1"
         },
         {
             "package": "symfony/symfony",
@@ -14,8 +14,8 @@
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "207124c97389eff190c52f695e8804aaf04d6239",
-            "commit-date": "1343193846"
+            "source-reference": "cbd03ec4c66567cf2bf4ea9e0e3315a522b4eeb3",
+            "commit-date": "1343635713"
         },
         {
             "package": "twig/twig",
@@ -26,8 +26,8 @@
         {
             "package": "twig/twig",
             "version": "dev-master",
-            "source-reference": "657de7bdeb680815e0df95f63da9f81e1533d2ea",
-            "commit-date": "1342953178"
+            "source-reference": "51c866f415bbee670cd9ba13591307bce8dabdca",
+            "commit-date": "1343464333"
         }
     ],
     "packages-dev": null,

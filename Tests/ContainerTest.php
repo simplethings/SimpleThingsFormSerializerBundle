@@ -21,15 +21,12 @@ use SimpleThings\FormSerializerBundle\Serializer\EncoderRegistry;
 use SimpleThings\FormSerializerBundle\Form\SerializerExtension;
 use SimpleThings\FormSerializerBundle\DependencyInjection\CompilerPass\EncoderPass;
 
-class ContainerTest extends \PHPUnit_Framework_TestCase
+class ContainerTest extends TestCase
 {
     public function testContainer()
     {
-        $registry = new EncoderRegistry(array(new XmlEncoder, new JsonEncoder));
-        $factory  = new FormFactory(new FormRegistry(array(
-            new CoreExtension(),
-            new SerializerExtension($registry)
-        )));
+        $factory = $this->createFormFactory();
+
         $container = new ContainerBuilder(new ParameterBag(array(
             'kernel.debug'       => false,
             'kernel.bundles'     => array(),
