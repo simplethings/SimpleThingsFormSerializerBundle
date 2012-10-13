@@ -8,9 +8,9 @@
     ],
     "minimum-stability" : "beta",
     "require": {
-        "symfony/form": "2.1.*",
-        "symfony/http-foundation": "2.1.*",
-        "symfony/serializer": "2.1.*"
+        "symfony/form": ">=2.1,<2.3-dev",
+        "symfony/http-foundation": ">=2.1,<2.3-dev",
+        "symfony/serializer": ">=2.1,<2.3-dev"
     },
     "require-dev": {
         "jms/serializer-bundle": "dev-master"
