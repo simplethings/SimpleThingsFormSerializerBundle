@@ -17,6 +17,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Form Controller helps implementing Restful Controllers
@@ -48,7 +52,7 @@ abstract class RestFormController extends Controller
     protected $form;
 
     /**
-     * @return SimpleThings\FormSerializerBundle\Serializer\FormSerializer
+     * @return \SimpleThings\FormSerializerBundle\Serializer\FormSerializer
      */
     protected function getFormSerializer()
     {
