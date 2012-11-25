@@ -17,18 +17,23 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use Symfony\Component\Translation\TranslatorInterface;
 
 class FormSerializer implements FormSerializerInterface
 {
     private $factory;
     private $encoder;
     private $options;
+    private $translator;
 
-    public function __construct(FormFactoryInterface $factory, EncoderInterface $encoder, SerializerOptions $options = null)
+    public function __construct(TranslatorInterface $translator, FormFactoryInterface $factory, EncoderInterface $encoder, SerializerOptions $options = null)
     {
+        $this->translator = $translator;
         $this->factory = $factory;
         $this->encoder = $encoder;
         $this->options = $options ?: new SerializerOptions;
@@ -112,12 +117,17 @@ class FormSerializer implements FormSerializerInterface
         return $this->encoder->encode($data, $format);
     }
 
+    private function getErrorMessage(FormError $error)
+    {
+        return $this->translator->trans($error->getMessageTemplate(), $error->getMessageParameters(), 'validators');
+    }
+
     private function serializeFormError(FormInterface $form)
     {
         $result = array();
 
         foreach ($form->getErrors() as $error) {
-            $result['error'][] = $error->getMessage();
+            $result['errors'][] = $this->getErrorMessage($error);
         }
 
         foreach ($form->getChildren() as $child) {

@@ -30,6 +30,7 @@
         </service>
 
         <service id="simple_things_form_serializer.form_serializer" class="%simple_things_form_serializer.form_serializer.class%">
+            <argument type="service" id="translator" />
             <argument type="service" id="form.factory" />
             <argument type="service" id="simple_things_form_serializer.serializer.encoder_registry" />
             <argument type="service" id="simple_things_form_serializer.serializer.options" />
