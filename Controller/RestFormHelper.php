@@ -17,6 +17,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Form trait helper implementing Restful Controllers
@@ -84,7 +88,7 @@ trait RestFormHelper
         $form   = $form ?: $this->form;
         $format = $this->getRequest()->getRequestFormat();
 
-        if ($format === "html") {
+        if ($format === 'html') {
             $variables['form'] = $form->createView();
             $variables['data'] = $form->getData();
 
@@ -119,7 +123,7 @@ trait RestFormHelper
      */
     protected function flash()
     {
-        if ($this->getRequest()->getRequestFormat() !== "html") {
+        if ($this->getRequest()->getRequestFormat() !== 'html') {
             return new FlashBag; // dummy flush-bag, to keep the fluent
         }
 
@@ -150,8 +154,8 @@ trait RestFormHelper
         $link = $this->generateUrl($routeName, $parameters, $absolute);
 
         if ($statusCode === 201 || $statusCode === 204) {
-            if ($this->getRequest()->getRequestFormat() !== "html") {
-                return new Response("", $statusCode, array("Location" => $link));
+            if ($this->getRequest()->getRequestFormat() !== 'html') {
+                return new Response('', $statusCode, array('Location' => $link));
             }
             $statusCode = 301;
         }
