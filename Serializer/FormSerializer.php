@@ -87,7 +87,7 @@ class FormSerializer
             $result['error'][] = $error->getMessage();
         }
 
-        foreach ($form->getChildren() as $child) {
+        foreach ($form->all() as $child) {
             $errors = $this->serializeFormError($child);
 
             if ($errors) {
@@ -100,14 +100,14 @@ class FormSerializer
 
     private function serializeForm(FormInterface $form, $isXml)
     {
-        if ( ! $form->hasChildren()) {
+        if ( ! $form->count()) {
             return $form->getViewData();
         }
 
         $data = array();
         $namingStrategy = $this->options->getNamingStrategy();
 
-        foreach ($form->getChildren() as $child) {
+        foreach ($form->all() as $child) {
             $options = $child->getConfig()->getOptions();
             $name    = $options['serialize_name'] ?: $namingStrategy->translateName($child);
 
