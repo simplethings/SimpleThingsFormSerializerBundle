@@ -47,16 +47,16 @@ class EncoderRegistry implements EncoderInterface, DecoderInterface
         return false;
     }
 
-    public function decode($data, $format)
+    public function decode($data, $format, array $context = array())
     {
         $encoder = $this->getEncoder($format);
-        return $encoder->decode($data, $format);
+        return $encoder->decode($data, $format, $context);
     }
 
-    public function encode($data, $format)
+    public function encode($data, $format, array $context = array())
     {
         $encoder = $this->getEncoder($format);
-        return $encoder->encode($data, $format);
+        return $encoder->encode($data, $format, $context);
     }
 
     public function getEncoder($format)
