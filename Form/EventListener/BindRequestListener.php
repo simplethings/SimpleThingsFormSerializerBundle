@@ -69,7 +69,7 @@ class BindRequestListener implements EventSubscriberInterface
 
     private function unserializeForm($data, $form, $isXml)
     {
-        if ($form->hasAttribute('serialize_collection_form')) {
+        if ($form->getConfig()->hasAttribute('serialize_collection_form')) {
             $form   = $form->getAttribute('serialize_collection_form');
             $result = array();
 
@@ -82,14 +82,14 @@ class BindRequestListener implements EventSubscriberInterface
             }
 
             return $result;
-        } else if ( ! $form->hasChildren()) {
+        } else if ( ! $form->all()) {
             return $data;
         }
 
         $result = array();
         $namingStrategy = $this->options->getNamingStrategy();
 
-        foreach ($form->getChildren() as $child) {
+        foreach ($form->all() as $child) {
             $options     = $child->getConfig()->getOptions();
 
             if (isset($options['disabled']) && $options['disabled']) {
