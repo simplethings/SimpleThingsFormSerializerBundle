@@ -64,12 +64,12 @@ class BindRequestListener implements EventSubscriberInterface
             $data = isset($data[$xmlName]) ? $data[$xmlName] : array();
         }
 
-        $event->setData($this->unserializeForm($data, $form, $format == "xml"));
+        $event->setData($this->unserializeForm($data, $form, $format == "xml", $request->getMethod() == "PATCH"));
     }
 
-    private function unserializeForm($data, $form, $isXml)
+    private function unserializeForm($data, $form, $isXml, $isPatch)
     {
-        if ($form->hasAttribute('serialize_collection_form')) {
+        if ($form->getConfig()->hasAttribute('serialize_collection_form')) {
             $form   = $form->getAttribute('serialize_collection_form');
             $result = array();
 
@@ -78,18 +78,18 @@ class BindRequestListener implements EventSubscriberInterface
             }
 
             foreach ($data as $key => $child) {
-                $result[$key] = $this->unserializeForm($child, $form, $isXml);
+                $result[$key] = $this->unserializeForm($child, $form, $isXml, $isPatch);
             }
 
             return $result;
-        } else if ( ! $form->hasChildren()) {
+        } else if ( ! $form->all()) {
             return $data;
         }
 
         $result = array();
         $namingStrategy = $this->options->getNamingStrategy();
 
-        foreach ($form->getChildren() as $child) {
+        foreach ($form->all() as $child) {
             $options     = $child->getConfig()->getOptions();
 
             if (isset($options['disabled']) && $options['disabled']) {
@@ -111,7 +111,9 @@ class BindRequestListener implements EventSubscriberInterface
                     : (isset($data[$name]) ? $data[$name] : null);
             }
 
-            $result[$child->getName()] = $this->unserializeForm($value, $child, $isXml);
+            // If we are PATCHing then don't fill in missing attributes with null
+            $childValue = $this->unserializeForm($value, $child, $isXml, $isPatch);
+            if (!($isPatch && !$childValue)) $result[$child->getName()] = $childValue;
         }
 
         return $result;
