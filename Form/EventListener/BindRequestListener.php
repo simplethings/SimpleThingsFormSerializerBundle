@@ -70,7 +70,7 @@ class BindRequestListener implements EventSubscriberInterface
     private function unserializeForm($data, $form, $isXml, $isPatch)
     {
         if ($form->getConfig()->hasAttribute('serialize_collection_form')) {
-            $form   = $form->getAttribute('serialize_collection_form');
+            $form   = $form->getConfig()->getAttribute('serialize_collection_form');
             $result = array();
 
             if (!isset($data[0])) {

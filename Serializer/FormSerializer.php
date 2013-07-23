@@ -140,7 +140,7 @@ class FormSerializer implements FormSerializerInterface
         $data = array();
         $namingStrategy = $this->options->getNamingStrategy();
 
-        foreach ($form->getChildren() as $child) {
+        foreach ($form->all() as $child) {
             $options = $child->getConfig()->getOptions();
             $name    = $options['serialize_name'] ?: $namingStrategy->translateName($child);
 
