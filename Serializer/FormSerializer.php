@@ -120,7 +120,7 @@ class FormSerializer implements FormSerializerInterface
             $result['error'][] = $error->getMessage();
         }
 
-        foreach ($form->getChildren() as $child) {
+        foreach ($form->all() as $child) {
             $errors = $this->serializeFormError($child);
 
             if ($errors) {
@@ -133,7 +133,7 @@ class FormSerializer implements FormSerializerInterface
 
     private function serializeForm(FormInterface $form, $isXml)
     {
-        if ( ! $form->hasChildren()) {
+        if ( ! $form->all()) {
             return $form->getViewData();
         }
 
