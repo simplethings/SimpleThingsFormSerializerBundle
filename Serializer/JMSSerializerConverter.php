@@ -70,28 +70,58 @@ PHP;
 
     private function getType($type, $recursive = false)
     {
-        if (isset($this->typeMap[$type])) {
-            return $this->typeMap[$type];
-        } else if (strpos($type, "array<") === 0) {
-            if ( ! $recursive) {
-                return 'collection';
+        if (is_array($type)){ //JMSSerializer version > 0.9
+
+            if (isset($this->typeMap[$type['name']])) {
+                return $this->typeMap[$type['name']];
+            } else if ($type['name'] === 'ArrayCollection' || $type['name'] === 'array' && !empty($type['params'])) {
+                if (!$recursive) {
+                    return 'collection';
+                }
+
+                if (count($type['params'] === 1)) {
+                    $listType = $type['params'][0];
+                } else {
+                    $keyType = $type['params'][0];
+                    $listType = $type['params'][1];
+                }
+
+                return $this->getType($listType);
+            } else if (class_exists($type['name'])) {
+
+                $parts = explode("\\", $type['name']);
+                return "new ".end($parts)."Type()";
             }
 
-            if (false === $pos = strpos($type, ',', 6)) {
-                $listType = substr($type, 6, -1);
-            } else {
-                $keyType = trim(substr($type, 6, $pos - 6));
-                $listType = trim(substr($type, $pos+1, -1));
+            return "text";
+
+        }else{ // JMSSerializer version <= 0.9
+
+            if (isset($this->typeMap[$type])) {
+                return $this->typeMap[$type];
+            } else if (strpos($type, "array<") === 0) {
+                if ( ! $recursive) {
+                    return 'collection';
+                }
+
+                if (false === $pos = strpos($type, ',', 6)) {
+                    $listType = substr($type, 6, -1);
+                } else {
+                    $keyType = trim(substr($type, 6, $pos - 6));
+                    $listType = trim(substr($type, $pos+1, -1));
+                }
+
+                return $this->getType($listType);
+            } else if (class_exists($type)) {
+
+                $parts = explode("\\", $type);
+                return "new " . end($parts) . "Type()";
             }
 
-            return $this->getType($listType);
-        } else if (class_exists($type)) {
+            return "text";
 
-            $parts = explode("\\", $type);
-            return "new " . end($parts) . "Type()";
         }
 
-        return "text";
     }
 
     public function generateFormPhpCode($className)
