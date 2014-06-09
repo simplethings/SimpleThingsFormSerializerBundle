@@ -13,6 +13,10 @@
 
 namespace SimpleThings\FormSerializerBundle\Serializer;
 
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormTypeInterface;
+
 /**
  * Serializes object graphs based on form types.
  */
