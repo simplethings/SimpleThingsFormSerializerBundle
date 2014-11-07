@@ -113,7 +113,7 @@ class BindRequestListener implements EventSubscriberInterface
 
             // If we are PATCHing then don't fill in missing attributes with null
             $childValue = $this->unserializeForm($value, $child, $isXml, $isPatch);
-            if (!($isPatch && !$childValue)) $result[$child->getName()] = $childValue;
+            if (!($isPatch && is_null($childValue))) $result[$child->getName()] = $childValue;
         }
 
         return $result;
