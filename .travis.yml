@@ -10,8 +10,6 @@ matrix:
     - php: 5.4
       env: dependencies=lowest
 
-install: composer install
-
 before_script:
   - composer self-update
   - composer install -n
