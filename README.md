@@ -1,5 +1,7 @@
 # FormSerializerBundle
 
+[![Build Status](https://travis-ci.org/simplethings/SimpleThingsFormSerializerBundle.svg?branch=master)](https://travis-ci.org/simplethings/SimpleThingsFormSerializerBundle)
+
 Bundle that helps solving the Serializer/Form component API missmatch. This missmatch leads to non-reusable
 code in controllers, bloating every application by reimplementing everything over
 and over again. Currently its nearly impossible to re-use REST-API calls and HTML/Form-based submits

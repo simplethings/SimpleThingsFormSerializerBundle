@@ -4,18 +4,24 @@
     "description": "(De-)Serialization of Object-Graphs into XML/JSON based on Form Types",
     "license": "MIT",
     "authors": [
-        {"name": "Benjamin Eberlei", "email": "kontakt@beberlei.de"}
+        {
+            "name": "Benjamin Eberlei",
+            "email": "kontakt@beberlei.de"
+        }
     ],
-    "minimum-stability" : "beta",
     "require": {
-        "php": ">=5.3.0",
-        "symfony/symfony": "~2.1"
+        "php": ">=5.4",
+        "symfony/framework-bundle": "~2.3",
+        "symfony/serializer": "~2.3",
+        "symfony/form": "~2.3"
     },
     "require-dev": {
-        "jms/serializer-bundle": "dev-master"
+        "jms/serializer": "~0.16"
     },
     "autoload": {
-        "psr-0": {"SimpleThings\\FormSerializerBundle\\":""}
+        "psr-4": {"SimpleThings\\FormSerializerBundle\\": ""}
     },
-    "target-dir": "SimpleThings/FormSerializerBundle"
+    "autoload-dev": {
+        "psr-4": {"SimpleThings\\FormSerializerBundle\\Tests\\": "Tests/"}
+    }
 }

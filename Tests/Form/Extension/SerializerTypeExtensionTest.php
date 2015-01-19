@@ -1,17 +1,18 @@
 <?php
 
-namespace SimpleThingsFormSerializerBundle\Tests\Form\Extension;
+namespace SimpleThings\FormSerializerBundle\Tests\Form\Extension;
 
 use SimpleThings\FormSerializerBundle\Form\SerializerExtension;
 use SimpleThings\FormSerializerBundle\Serializer\EncoderRegistry;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Test\FormIntegrationTestCase;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
 /**
  * @author Henrik Bjornskov <henrik@bjrnskov.dk>
  */
-class SerializerTypeExtensionTest extends \Symfony\Component\Form\Tests\FormIntegrationTestCase
+class SerializerTypeExtensionTest extends FormIntegrationTestCase
 {
     public function testSerializeOnlyIsRemovedFromView()
     {
@@ -22,9 +23,9 @@ class SerializerTypeExtensionTest extends \Symfony\Component\Form\Tests\FormInte
 
     public function getExtensions()
     {
-        $registry = new EncoderRegistry(array(new JsonEncoder));
+        $registry = new EncoderRegistry([new JsonEncoder()]);
 
-        $extensions = parent::getExtensions();
+        $extensions   = parent::getExtensions();
         $extensions[] = new SerializerExtension($registry);
 
         return $extensions;
@@ -38,10 +39,9 @@ class ChildType extends AbstractType
     {
         $builder
             ->add('name', 'text')
-            ->add('createdAt', 'date', array(
+            ->add('createdAt', 'date', [
                 'serialize_only' => true,
-            ))
-        ;
+            ]);
     }
 
     public function getName()

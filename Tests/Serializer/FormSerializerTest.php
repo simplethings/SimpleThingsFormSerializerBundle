@@ -13,14 +13,12 @@
 
 namespace SimpleThings\FormSerializerBundle\Tests\Serializer;
 
+use SimpleThings\FormSerializerBundle\Tests\Serializer\Fixture\Address;
+use SimpleThings\FormSerializerBundle\Tests\Serializer\Fixture\User;
+use SimpleThings\FormSerializerBundle\Tests\Serializer\Fixture\UserType;
+use SimpleThings\FormSerializerBundle\Tests\TestCase;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
-
-use SimpleThings\FormSerializerBundle\Tests\TestCase;
-use SimpleThings\FormSerializerBundle\Tests\Serializer\Fixture\User;
-use SimpleThings\FormSerializerBundle\Tests\Serializer\Fixture\Address;
-use SimpleThings\FormSerializerBundle\Tests\Serializer\Fixture\UserType;
-use SimpleThings\FormSerializerBundle\Tests\Serializer\Fixture\AddressType;
 
 class FormSerializerTest extends TestCase
 {
@@ -38,27 +36,31 @@ class FormSerializerTest extends TestCase
         $user->email     = "kontakt@beberlei.de";
         $user->birthday  = new \DateTime("1984-03-18");
         $user->gender    = 'male';
-        $user->interests = array('sport', 'reading');
+        $user->interests = ['sport', 'reading'];
         $user->country   = "DE";
         $user->address   = $address;
 
-        $builder = $factory->createBuilder('form', null, array('data_class' => __NAMESPACE__ . '\\Fixture\\User', 'serialize_xml_name' => 'user'));
+        $builder = $factory->createBuilder('form', null,
+            ['data_class' => __NAMESPACE__ . '\\Fixture\\User', 'serialize_xml_name' => 'user']);
         $builder
             ->add('username', 'text')
             ->add('email', 'email')
-            ->add('birthday', 'date', array('widget' => 'single_text'))
-            ->add('gender', 'choice', array('choices' => array('male' => 'Male', 'female' => 'Female')))
-            ->add('interests', 'choice', array('choices' => array('sport' => 'Sports', 'reading' => 'Reading'), 'multiple' => true, 'serialize_xml_inline' => false, 'serialize_xml_name' => 'interest'))
-            ->add('country', 'country', array('serialize_only' => true))
-            ->add('address', null, array('compound' => true, 'data_class' => __NAMESPACE__ . '\\Fixture\\Address'))
-            ;
+            ->add('birthday', 'date', ['widget' => 'single_text'])
+            ->add('gender', 'choice', ['choices' => ['male' => 'Male', 'female' => 'Female']])
+            ->add('interests', 'choice', [
+                'choices'              => ['sport' => 'Sports', 'reading' => 'Reading'],
+                'multiple'             => true,
+                'serialize_xml_inline' => false,
+                'serialize_xml_name'   => 'interest'
+            ])
+            ->add('country', 'country', ['serialize_only' => true])
+            ->add('address', null, ['compound' => true, 'data_class' => __NAMESPACE__ . '\\Fixture\\Address']);
 
         $addressBuilder = $builder->get('address');
         $addressBuilder
-            ->add('street', 'text', array('serialize_xml_value' => true))
-            ->add('zipCode', 'text', array('serialize_xml_attribute' => true))
-            ->add('city', 'text', array('serialize_xml_attribute' => true))
-            ;
+            ->add('street', 'text', ['serialize_xml_value' => true])
+            ->add('zipCode', 'text', ['serialize_xml_attribute' => true])
+            ->add('city', 'text', ['serialize_xml_attribute' => true]);
 
         $formSerializer = $this->createFormSerializer();
 
@@ -106,22 +108,22 @@ JSON
             , $this->formatJson($json));
 
         $user2 = new User;
-        $form = $builder->getForm();
+        $form  = $builder->getForm();
         $form->setData($user2);
 
-        $request = new Request(array(), array(),array(),array(),array(),array(
-                    'CONTENT_TYPE' => 'text/xml',
-                    ), $xml);
+        $request = new Request([], [], [], [], [], [
+            'CONTENT_TYPE' => 'text/xml',
+        ], $xml);
 
         $form->bind($request);
 
         $user3 = new User;
-        $form = $builder->getForm();
+        $form  = $builder->getForm();
         $form->setData($user3);
 
-        $request = new Request(array(), array(),array(),array(),array(),array(
-                    'CONTENT_TYPE' => 'application/json',
-                    ), $json);
+        $request = new Request([], [], [], [], [], [
+            'CONTENT_TYPE' => 'application/json',
+        ], $json);
         $form->bind($request);
 
         $this->assertEquals($user2, $user);
@@ -135,15 +137,15 @@ JSON
         $address->zipCode = 12345;
         $address->city    = "Bonn";
 
-        $user           = new User();
-        $user->username = "beberlei";
-        $user->email    = "kontakt@beberlei.de";
-        $user->birthday = new \DateTime("1984-03-18");
-        $user->country  = "DE";
-        $user->address  = $address;
-        $user->addresses = array($address, $address);
+        $user            = new User();
+        $user->username  = "beberlei";
+        $user->email     = "kontakt@beberlei.de";
+        $user->birthday  = new \DateTime("1984-03-18");
+        $user->country   = "DE";
+        $user->address   = $address;
+        $user->addresses = [$address, $address];
 
-        $data = array($user, $user, $user);
+        $data = [$user, $user, $user];
 
         $formSerializer = $this->createFormSerializer();
 
@@ -280,13 +282,13 @@ JSON
         $address->zipCode = 12345;
         $address->city    = "Bonn";
 
-        $user           = new User();
-        $user->username = "beberlei";
-        $user->email    = "kontakt@beberlei.de";
-        $user->birthday = new \DateTime("1984-03-18");
-        $user->country  = "DE";
-        $user->address  = $address;
-        $user->addresses = array($address, $address);
+        $user            = new User();
+        $user->username  = "beberlei";
+        $user->email     = "kontakt@beberlei.de";
+        $user->birthday  = new \DateTime("1984-03-18");
+        $user->country   = "DE";
+        $user->address   = $address;
+        $user->addresses = [$address, $address];
 
         $formSerializer = $this->createFormSerializer();
 
@@ -308,14 +310,14 @@ JSON
 </user>
 
 XML
-        , $xml);
+            , $xml);
 
-        $request = new Request(array(), array(),array(),array(),array(),array(
-                    'CONTENT_TYPE' => 'text/xml',
-                    ), $xml);
+        $request = new Request([], [], [], [], [], [
+            'CONTENT_TYPE' => 'text/xml',
+        ], $xml);
 
         $user2 = new User();
-        $form = $factory->create($type, $user2);
+        $form  = $factory->create($type, $user2);
         $form->bind($request);
 
         $this->assertEquals(2, count($user2->addresses));
@@ -326,8 +328,8 @@ XML
         $factory = $this->createFormFactory();
 
         $user2 = new User();
-        $form = $factory->create(new UserType(), $user2);
-        $xml = <<<XML
+        $form  = $factory->create(new UserType(), $user2);
+        $xml   = <<<XML
 <?xml version="1.0"?>
 <user>
   <username>beberlei</username>
@@ -344,10 +346,10 @@ XML
 
 XML;
 
-        $request = new Request(array(), array(),array(),array(),array(),array(
-                    'CONTENT_TYPE' => 'text/xml',
-                    ), $xml);
-        $form->bind($request);
+        $request = new Request([], [], [], [], [], [
+            'CONTENT_TYPE' => 'text/xml',
+        ], $xml);
+        $form->submit($request);
 
         $form->addError(new FormError("foo"));
         $form->addError(new FormError("bar"));
@@ -355,9 +357,12 @@ XML;
         $form->get('email')->addError(new FormError("bar"));
 
         $formSerializer = $this->createFormSerializer();
-        $xml = $formSerializer->serialize(null, $form, 'xml');
+        $xml            = $formSerializer->serialize(null, $form, 'xml');
 
-        $this->assertEquals("<?xml version=\"1.0\"?>\n<form><error>foo</error><error>bar</error><children><username><error>bar</error></username><email><error>bar</error></email></children></form>\n", $xml);
+        $this->assertEquals(
+            "<?xml version=\"1.0\"?>\n<form><error>foo</error><error>bar</error><children><username><error>bar</error></username><email><error>bar</error></email></children></form>\n",
+            $xml
+        );
     }
 }
 

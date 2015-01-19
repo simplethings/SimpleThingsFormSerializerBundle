@@ -21,14 +21,14 @@ use Metadata\MetadataFactoryInterface;
 class JMSSerializerConverter
 {
     private $metadataFactory;
-    private $typeMap = array(
+    private $typeMap = [
         'string'   => 'text',
         'boolean'  => 'checkbox',
         'integer'  => 'integer',
         'double'   => 'number',
         'DateTime' => 'datetime',
         'datetime' => 'datetime',
-    );
+    ];
 
     static private $template = <<<'PHP'
 <?php
@@ -70,24 +70,32 @@ PHP;
 
     private function getType($type, $recursive = false)
     {
-        if (isset($this->typeMap[$type])) {
-            return $this->typeMap[$type];
-        } else if (strpos($type, "array<") === 0) {
-            if ( ! $recursive) {
+        if (null === $type) {
+            return 'text';
+        }
+
+        $name = $type['name'];
+
+        if (isset($this->typeMap[$name])) {
+            return $this->typeMap[$name];
+        } elseif ('array' === $name) {
+            if (! $recursive) {
                 return 'collection';
             }
 
-            if (false === $pos = strpos($type, ',', 6)) {
-                $listType = substr($type, 6, -1);
+            $params = $type['params'];
+
+            if (count($params) === 1) {
+                $listType = $params[0];
             } else {
-                $keyType = trim(substr($type, 6, $pos - 6));
-                $listType = trim(substr($type, $pos+1, -1));
+                $keyType  = $params[0];
+                $listType = $params[1];
             }
 
             return $this->getType($listType);
-        } else if (class_exists($type)) {
+        } elseif (class_exists($name)) {
+            $parts = explode("\\", $name);
 
-            $parts = explode("\\", $type);
             return "new " . end($parts) . "Type()";
         }
 
@@ -97,23 +105,21 @@ PHP;
     public function generateFormPhpCode($className)
     {
         $metadata = $this->metadataFactory->getMetadataForClass($className);
-        $lines = array();
+        $defaults = ["'data_class' => '" . $metadata->name . "'"];
 
-        $defaults = array(
-            "'data_class' => '" . $metadata->name . "'"
-        );
         if ($metadata->xmlRootName) {
             $efaults[] = "'serialize_xml_name' => '" . $metadata->xmlRootName . "'";
         }
 
-        $builder = array();
+        $builder = [];
         foreach ($metadata->propertyMetadata as $property) {
-            $options = array();
-            $type    = $this->getType($property->type);
+            $options = [];
+
+            $type = $this->getType($property->type);
 
             if ($property->xmlCollection || $type === 'collection') {
                 $options[] = "'type' => " . $this->getType($property->type, true);
-                if ( ! $property->xmlCollectionInline) {
+                if (! $property->xmlCollectionInline) {
                     $options[] = "'serialize_xml_inline' => false";
                 }
 
@@ -138,21 +144,21 @@ PHP;
 
             $type = (strpos($type, " ") === false) ? "'" . $type . "'" : $type;
 
-            $builder[] = "->add('" . $property->name . "', " . $type .  $options . ")";
+            $builder[] = "->add('" . $property->name . "', " . $type . $options . ")";
         }
 
         // TODO: Replace
-        $variables = array(
+        $variables = [
             'name'      => strtolower($metadata->reflection->getShortName()),
             'class'     => $metadata->reflection->getShortName(),
-            'namespace' => str_replace(array("Entity", "Document"), "Form", $metadata->reflection->getNamespaceName()),
+            'namespace' => str_replace(["Entity", "Document"], "Form", $metadata->reflection->getNamespaceName()),
             'build'     => implode("\n            ", $builder),
             'defaults'  => implode("\n", $defaults),
-        );
+        ];
 
         $code = self::$template;
         foreach ($variables as $placeholder => $variable) {
-            $code = str_replace("{{".$placeholder."}}", $variable, $code);
+            $code = str_replace("{{" . $placeholder . "}}", $variable, $code);
         }
 
         return $code;
