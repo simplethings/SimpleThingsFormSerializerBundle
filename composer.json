@@ -18,10 +18,18 @@
     "require-dev": {
         "jms/serializer": "~0.16"
     },
+    "suggest": {
+        "jms/serializer": ""
+    },
     "autoload": {
         "psr-4": {"SimpleThings\\FormSerializerBundle\\": ""}
     },
     "autoload-dev": {
         "psr-4": {"SimpleThings\\FormSerializerBundle\\Tests\\": "Tests/"}
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
     }
 }
