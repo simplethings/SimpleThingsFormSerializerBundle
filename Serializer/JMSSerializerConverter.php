@@ -108,7 +108,7 @@ PHP;
         $defaults = ["'data_class' => '" . $metadata->name . "'"];
 
         if ($metadata->xmlRootName) {
-            $efaults[] = "'serialize_xml_name' => '" . $metadata->xmlRootName . "'";
+            $defaults[] = "'serialize_xml_name' => '" . $metadata->xmlRootName . "'";
         }
 
         $builder = [];
