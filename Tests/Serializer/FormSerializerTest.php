@@ -318,7 +318,7 @@ XML
 
         $user2 = new User();
         $form  = $factory->create($type, $user2);
-        $form->bind($request);
+        $form->submit($request);
 
         $this->assertEquals(2, count($user2->addresses));
     }

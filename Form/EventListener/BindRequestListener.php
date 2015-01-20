@@ -13,14 +13,13 @@
 
 namespace SimpleThings\FormSerializerBundle\Form\EventListener;
 
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormEvent;
+use SimpleThings\FormSerializerBundle\Serializer\SerializerOptions;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
-
-use SimpleThings\FormSerializerBundle\Serializer\EncoderRegistry;
-use SimpleThings\FormSerializerBundle\Serializer\SerializerOptions;
 
 class BindRequestListener implements EventSubscriberInterface
 {
@@ -36,7 +35,7 @@ class BindRequestListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         // High priority in order to supersede other listeners
-        return array(FormEvents::PRE_BIND => array('preBind', 129));
+        return [FormEvents::PRE_SUBMIT => ['preBind', 129]];
     }
 
     public function preBind(FormEvent $event)
@@ -44,37 +43,38 @@ class BindRequestListener implements EventSubscriberInterface
         $form    = $event->getForm();
         $request = $event->getData();
 
-        if ( ! $request instanceof Request) {
+        if (! $request instanceof Request) {
             return;
         }
 
         $format = $request->getContentType();
 
-        if ( ! $this->decoder->supportsDecoding($format)) {
+        if (! $this->decoder->supportsDecoding($format)) {
             return;
         }
 
         $content = $request->getContent();
         $options = $form->getConfig()->getOptions();
-        $xmlName = !empty($options['serialize_xml_name']) ? $options['serialize_xml_name'] : 'entry';
+        $xmlName = ! empty($options['serialize_xml_name']) ? $options['serialize_xml_name'] : 'entry';
         $data    = $this->decoder->decode($content, $format);
 
-        if ( ($format === "json" && $this->options->getIncludeRootInJson()) ||
-             ($format === "xml" && $this->options->getApplicationXmlRootName() && $this->options->getApplicationXmlRootName() !== $xmlName)) {
-            $data = isset($data[$xmlName]) ? $data[$xmlName] : array();
+        if (($format === "json" && $this->options->getIncludeRootInJson()) ||
+            ($format === "xml" && $this->options->getApplicationXmlRootName() && $this->options->getApplicationXmlRootName() !== $xmlName)
+        ) {
+            $data = isset($data[$xmlName]) ? $data[$xmlName] : [];
         }
 
         $event->setData($this->unserializeForm($data, $form, $format == "xml", $request->getMethod() == "PATCH"));
     }
 
-    private function unserializeForm($data, $form, $isXml, $isPatch)
+    private function unserializeForm($data, FormInterface $form, $isXml, $isPatch)
     {
         if ($form->getConfig()->hasAttribute('serialize_collection_form')) {
             $form   = $form->getConfig()->getAttribute('serialize_collection_form');
-            $result = array();
+            $result = [];
 
-            if (!isset($data[0])) {
-                $data = array($data); // XML special case
+            if (! isset($data[0])) {
+                $data = [$data]; // XML special case
             }
 
             foreach ($data as $key => $child) {
@@ -82,15 +82,17 @@ class BindRequestListener implements EventSubscriberInterface
             }
 
             return $result;
-        } else if ( ! $form->all()) {
-            return $data;
+        } else {
+            if (! $form->all()) {
+                return $data;
+            }
         }
 
-        $result = array();
+        $result         = [];
         $namingStrategy = $this->options->getNamingStrategy();
 
         foreach ($form->all() as $child) {
-            $options     = $child->getConfig()->getOptions();
+            $options = $child->getConfig()->getOptions();
 
             if (isset($options['disabled']) && $options['disabled']) {
                 continue;
@@ -101,19 +103,23 @@ class BindRequestListener implements EventSubscriberInterface
 
             if ($options['serialize_xml_value'] && isset($data['#'])) {
                 $value = $data['#'];
-            } else if (! $options['serialize_xml_inline'] && $isXml) {
-                $value = isset($data[$name][$options['serialize_xml_name']])
-                    ? $data[$name][$options['serialize_xml_name']]
-                    : null;
             } else {
-                $value = isset($data['@' . $name])
-                    ? $data['@' . $name]
-                    : (isset($data[$name]) ? $data[$name] : null);
+                if (! $options['serialize_xml_inline'] && $isXml) {
+                    $value = isset($data[$name][$options['serialize_xml_name']])
+                        ? $data[$name][$options['serialize_xml_name']]
+                        : null;
+                } else {
+                    $value = isset($data['@' . $name])
+                        ? $data['@' . $name]
+                        : (isset($data[$name]) ? $data[$name] : null);
+                }
             }
 
             // If we are PATCHing then don't fill in missing attributes with null
             $childValue = $this->unserializeForm($value, $child, $isXml, $isPatch);
-            if (!($isPatch && !$childValue)) $result[$child->getName()] = $childValue;
+            if (! ($isPatch && ! $childValue)) {
+                $result[$child->getName()] = $childValue;
+            }
         }
 
         return $result;

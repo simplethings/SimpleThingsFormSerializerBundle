@@ -13,11 +13,14 @@
 
 namespace SimpleThings\FormSerializerBundle\Controller;
 
+use SimpleThings\FormSerializerBundle\Serializer\FormSerializer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormTypeInterface;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 
 /**
  * Form Controller helps implementing Restful Controllers
@@ -49,7 +52,7 @@ abstract class RestFormController extends Controller
     protected $form;
 
     /**
-     * @return SimpleThings\FormSerializerBundle\Serializer\FormSerializer
+     * @return FormSerializer
      */
     protected function getFormSerializer()
     {
@@ -65,7 +68,7 @@ abstract class RestFormController extends Controller
      *
      * @return bool
      */
-    protected function applyForm(FormTypeInterface $type, $data = null, array $options = array())
+    protected function applyForm(FormTypeInterface $type, $data = null, array $options = [])
     {
         $this->form = $this->bindForm($type, $data, $options);
 
@@ -75,12 +78,12 @@ abstract class RestFormController extends Controller
     /**
      * Create and return a form (failure) response based on the HTTP Response format.
      *
-     * @param FormInterface $data
+     * @param FormInterface $form
      * @param array         $variables Additional data that is passed to an HTML view.
      *
      * @return Response
      */
-    protected function renderForm(FormInterface $form = null, array $variables = array())
+    protected function renderForm(FormInterface $form = null, array $variables = [])
     {
         $form   = $form ?: $this->form;
         $format = $this->getRequest()->getRequestFormat();
@@ -93,7 +96,7 @@ abstract class RestFormController extends Controller
         }
 
         $statusCode = 200;
-        if ( ! $form->isValid()) {
+        if (! $form->isValid()) {
             $statusCode = 412;
         }
 
@@ -109,7 +112,7 @@ abstract class RestFormController extends Controller
         return new Response(
             $this->get('form_serializer')->serialize(null, $form, $format),
             $statusCode,
-            array('Content-Type' => $contentType)
+            ['Content-Type' => $contentType]
         );
     }
 
@@ -146,13 +149,13 @@ abstract class RestFormController extends Controller
      *
      * @return RedirectResponse
      */
-    protected function redirectRoute($routeName, $parameters = array(), $statusCode = 301, $absolute = false)
+    protected function redirectRoute($routeName, $parameters = [], $statusCode = 301, $absolute = false)
     {
         $link = $this->generateUrl($routeName, $parameters, $absolute);
 
         if ($statusCode === 201 || $statusCode === 204) {
             if ($this->getRequest()->getRequestFormat() !== "html") {
-                return new Response("", $statusCode, array("Location" => $link));
+                return new Response("", $statusCode, ["Location" => $link]);
             }
             $statusCode = 301;
         }
@@ -167,12 +170,12 @@ abstract class RestFormController extends Controller
      * @param mixed             $data
      * @param array             $options
      *
-     * @return FormInterace
+     * @return FormInterface
      */
-    protected function bindForm(FormTypeInterface $type, $data = null, $options = array())
+    protected function bindForm(FormTypeInterface $type, $data = null, $options = [])
     {
         $form = $this->createForm($type, $data, $options);
-        $form->bind($this->getRequest());
+        $form->submit($this->getRequest());
 
         return $form;
     }

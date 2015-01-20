@@ -12,13 +12,16 @@
     "require": {
         "php": ">=5.4",
         "symfony/framework-bundle": "~2.3",
+        "symfony/console": "~2.3",
         "symfony/serializer": "~2.3",
         "symfony/form": "~2.3"
     },
     "require-dev": {
+        "jms/serializer-bundle": "~0.13",
         "jms/serializer": "~0.16"
     },
     "suggest": {
+        "jms/serializer-bundle": "",
         "jms/serializer": ""
     },
     "autoload": {
