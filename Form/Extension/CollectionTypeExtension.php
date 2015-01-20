@@ -15,7 +15,6 @@ namespace SimpleThings\FormSerializerBundle\Form\Extension;
 
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class CollectionTypeExtension extends AbstractTypeExtension
 {

@@ -47,6 +47,7 @@ class SerializerOptions
         if ($this->namingStrategy === null) {
             $this->namingStrategy = new CamelCaseStrategy();
         }
+
         return $this->namingStrategy;
     }
 

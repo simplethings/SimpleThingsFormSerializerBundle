@@ -13,14 +13,12 @@
 
 namespace SimpleThings\FormSerializerBundle\Command;
 
+use Metadata\MetadataFactory;
+use SimpleThings\FormSerializerBundle\Serializer\JMSSerializerConverter;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-
-use SimpleThings\FormSerializerBundle\Serializer\JMSSerializerConverter;
-use Metadata\MetadataFactory;
 
 /**
  * Converter JMS Serializer Metadata into Form-Types for Serialization
@@ -32,8 +30,7 @@ class ConvertJMSSerializerCommand extends ContainerAwareCommand
         $this
             ->setName('simplethings:convert-jms-metadata')
             ->setDescription('Command helping with conversion of JMS Metadata to Form-Types.')
-            ->addArgument('class', InputArgument::REQUIRED, 'Class Name to convert')
-            ;
+            ->addArgument('class', InputArgument::REQUIRED, 'Class Name to convert');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

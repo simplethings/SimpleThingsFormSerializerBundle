@@ -13,13 +13,12 @@
 
 namespace SimpleThings\FormSerializerBundle\Form;
 
-use Symfony\Component\Form\Extension\Core\Type;
-use Symfony\Component\Form\AbstractExtension;
-use Symfony\Component\Serializer\Encoder\DecoderInterface;
-
-use SimpleThings\FormSerializerBundle\Form\Extension\SerializerTypeExtension;
 use SimpleThings\FormSerializerBundle\Form\Extension\CollectionTypeExtension;
+use SimpleThings\FormSerializerBundle\Form\Extension\SerializerTypeExtension;
 use SimpleThings\FormSerializerBundle\Serializer\SerializerOptions;
+use Symfony\Component\Form\AbstractExtension;
+use Symfony\Component\Form\Extension\Core\Type;
+use Symfony\Component\Serializer\Encoder\DecoderInterface;
 
 class SerializerExtension extends AbstractExtension
 {
@@ -34,10 +33,10 @@ class SerializerExtension extends AbstractExtension
 
     protected function loadTypeExtensions()
     {
-        return array(
+        return [
             new SerializerTypeExtension($this->encoderRegistry, $this->options),
             new CollectionTypeExtension(),
-        );
+        ];
     }
 }
 

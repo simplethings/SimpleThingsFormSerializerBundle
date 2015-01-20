@@ -13,15 +13,14 @@
 
 namespace SimpleThings\FormSerializerBundle\Form\Extension;
 
-use Symfony\Component\Form\AbstractTypeExtension;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormView;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Serializer\Encoder\DecoderInterface;
-
 use SimpleThings\FormSerializerBundle\Form\EventListener\BindRequestListener;
 use SimpleThings\FormSerializerBundle\Serializer\SerializerOptions;
+use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Serializer\Encoder\DecoderInterface;
 
 class SerializerTypeExtension extends AbstractTypeExtension
 {
@@ -52,14 +51,14 @@ class SerializerTypeExtension extends AbstractTypeExtension
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'serialize_name'          => false,
             'serialize_xml_name'      => 'entry',
             'serialize_xml_value'     => false,
             'serialize_xml_attribute' => false,
             'serialize_xml_inline'    => true,
             'serialize_only'          => false,
-        ));
+        ]);
     }
 
     public function getExtendedType()

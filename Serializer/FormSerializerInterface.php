@@ -13,6 +13,10 @@
 
 namespace SimpleThings\FormSerializerBundle\Serializer;
 
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormTypeInterface;
+
 /**
  * Serializes object graphs based on form types.
  */
@@ -22,10 +26,10 @@ interface FormSerializerInterface
      * Serialize a list of objects, where each element is serialized based on a
      * form type.
      *
-     * @param array|Traversable $list
-     * @param FormTypeInterface $type
-     * @param string $format
-     * @param string $xmlRootName
+     * @param array|\Traversable $list
+     * @param FormTypeInterface  $type
+     * @param string             $format
+     * @param string             $xmlRootName
      *
      * @return string
      */
@@ -34,9 +38,9 @@ interface FormSerializerInterface
     /**
      * Serialize an object based on a form type, form builder or form instance.
      *
-     * @param mixed $object
+     * @param mixed                                                $object
      * @param FormTypeInterface|FormBuilderInterface|FormInterface $typeBuilder
-     * @param string $format
+     * @param string                                               $format
      *
      * @return string
      */
